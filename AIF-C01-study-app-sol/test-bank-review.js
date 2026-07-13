@@ -46,6 +46,15 @@
   });
 
   const corrections = {
+  183: verified(["customization"], {
+    options: [
+      { label: "A", text: "Gather internal documents and industry materials, then merge them into one unlabeled file" },
+      { label: "B", text: "Collect external company reviews and label each review as positive or negative" },
+      { label: "C", text: "Create instruction-response pairs of questions and answers that address the company's industry domain" },
+      { label: "D", text: "Create few-shot prompts that tell the model to answer only domain questions" }
+    ],
+    explanation: "Instruction-based fine-tuning uses instruction-response examples. Domain-specific question-and-answer pairs teach the model how to respond to instructions in the target domain."
+  }),
   177: verified(["responsibleAi"], {
     prompt: "A hospital developed an AI system to provide personalized treatment recommendations. The system must provide the rationale behind its recommendations and make the insights accessible to doctors and patients. Which human-centered design principle does this scenario represent?"
   }),
