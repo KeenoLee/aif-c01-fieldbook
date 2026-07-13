@@ -46,6 +46,15 @@
   });
 
   const corrections = {
+  242: verified(["exam"], {
+    options: [
+      { label: "A", text: "Use Amazon Transcribe and Amazon Translate to generate subtitles in other languages" },
+      { label: "B", text: "Use Amazon Textract and Amazon Translate to generate subtitles in other languages" },
+      { label: "C", text: "Use Amazon Polly to generate voice-overs in other languages" },
+      { label: "D", text: "Use Amazon Translate to generate voice-overs in other languages" },
+      { label: "E", text: "Use Amazon Textract to generate voice-overs in other languages" }
+    ]
+  }),
   240: verified(["exam"], {
     prompt: "A bank is building a chatbot to answer questions about opening an account. The team supplies several example questions and ideal answers in each prompt so the model follows the desired pattern. Which prompt engineering technique is this?",
     explanation: "Few-shot prompting provides several examples in the prompt to guide how the model performs a task."
