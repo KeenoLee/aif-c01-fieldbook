@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  298: verified(["exam"], {
+    prompt: "A media streaming platform wants to provide movie recommendations to users based on their account history. Which AWS service meets these requirements?"
+  }),
   294: verified(["exam"], {
     explanation: "Conversion rate directly connects assistant interactions to completed purchases, making it the strongest listed measure of sales impact."
   }),
