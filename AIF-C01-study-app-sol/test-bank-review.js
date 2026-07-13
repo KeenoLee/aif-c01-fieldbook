@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  115: verified(["exam"], {
+    explanation: "Assess whether the foundation model aligns with the intended use case and measurable business goal. A benchmark score alone does not establish business value."
+  }),
   112: verified(["exam"], {
     explanation: "Large language models available through Amazon Bedrock can summarize medication reviews into concise overviews. The other listed services and task types do not fit text summarization."
   }),
