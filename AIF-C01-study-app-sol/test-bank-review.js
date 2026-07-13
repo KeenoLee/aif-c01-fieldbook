@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  230: verified(["responsibleAi"], {
+    prompt: "A food service company wants to collect a dataset to predict customer food preferences. The company wants the dataset to include the preferences of all demographic groups. Which dataset characteristic does this scenario represent?"
+  }),
   223: verified(["exam"], {
     explanation: "BLEU measures n-gram overlap between candidate and reference translations. Applying it consistently to outputs for the same source documents supports a relative comparison; it is not an absolute measure of translation quality."
   }),
