@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  73: verified(["exam"], {
+    explanation: "BERT-based models are well suited to masked-language modeling tasks because they use surrounding context to predict missing tokens."
+  }),
   71: verified(["responsibleAi"], {
     options: [
       { label: "A", text: "Include fairness metrics in model evaluation" },
