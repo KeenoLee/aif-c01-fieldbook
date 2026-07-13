@@ -474,7 +474,8 @@
       188: "Removed: the source maps explainable decisions to Transparency, but AWS defines Explainability and Transparency as separate responsible-AI dimensions.",
       201: "Removed: duplicate of question 378; the imported text was also damaged.",
       261: "Removed: near-duplicate of question 138.",
-      265: "Removed: SageMaker Ground Truth Plus support ended on June 30, 2026."
+      265: "Removed: SageMaker Ground Truth Plus support ended on June 30, 2026.",
+      284: "Removed: duplicate of question 272."
     },
     questions: {
       ...corrections,
