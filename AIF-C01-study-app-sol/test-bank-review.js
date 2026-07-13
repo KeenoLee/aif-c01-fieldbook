@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  133: verified(["exam"], {
+    prompt: "A company wants to enhance response quality for a large language model (LLM) on complex problem-solving tasks. The tasks require detailed reasoning and a step-by-step explanation. Which prompt engineering technique meets these requirements?"
+  }),
   123: verified(["responsibleAi"], {
     explanation: "Human-in-the-loop review can be used after model generation to identify and handle biased, toxic, uncertain, or high-impact outputs."
   }),
