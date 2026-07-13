@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  251: verified(["exam"], {
+    prompt: "A design company is using a foundation model (FM) on Amazon Bedrock to generate images for various projects. The company wants to control how detailed or abstract each generated image appears. Which model parameter should the company modify?"
+  }),
   243: verified(["knowledgeBases"], {
     options: [
       { label: "A", text: "Fine-tune an LLM on the company policy text by using Amazon SageMaker AI" },
