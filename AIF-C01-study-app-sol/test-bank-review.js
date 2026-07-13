@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  112: verified(["exam"], {
+    explanation: "Large language models available through Amazon Bedrock can summarize medication reviews into concise overviews. The other listed services and task types do not fit text summarization."
+  }),
   108: verified(["exam"], {
     options: [
       { label: "A", text: "Create one prompt for all products, then manually edit every response to make it specific and concise" },
