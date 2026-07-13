@@ -46,6 +46,16 @@
   });
 
   const corrections = {
+  126: verified(["cloudTrail", "glacier"], {
+    options: [
+      { label: "A", text: "AWS CloudTrail" },
+      { label: "B", text: "Amazon CloudWatch" },
+      { label: "C", text: "AWS Audit Manager" },
+      { label: "D", text: "Amazon S3 Glacier Deep Archive" },
+      { label: "E", text: "Amazon S3 Standard" }
+    ],
+    explanation: "CloudTrail records API activity. S3 Glacier Deep Archive is designed for long-lived, rarely accessed archives at the lowest S3 storage cost."
+  }),
   117: verified(["exam"], {
     prompt: "During which phase of the ML lifecycle should a team identify applicable compliance and regulatory requirements?",
     answers: ["D"],
