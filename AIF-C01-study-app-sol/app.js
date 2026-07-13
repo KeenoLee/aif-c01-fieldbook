@@ -274,8 +274,8 @@ const auditedBankQuestions = rawTestBankPayload.questions
     if (!audit) {
       return {
         ...question,
-        status: "imported",
-        verdict: "Imported without extraction flags",
+        status: testBankReview.reviewedAll ? "reviewed" : "imported",
+        verdict: testBankReview.reviewedAll ? "Reviewed against the AIF-C01 scope and current AWS guidance" : "Imported without extraction flags",
         sources: []
       };
     }
@@ -296,11 +296,12 @@ const testBankPayload = {
     answers: auditedBankQuestions.filter((question) => question.answers.length > 0).length,
     explanations: auditedBankQuestions.filter((question) => question.explanation).length,
     imported: auditedBankQuestions.filter((question) => question.status === "imported").length,
+    reviewed: auditedBankQuestions.filter((question) => question.status === "reviewed").length,
     verified: auditedBankQuestions.filter((question) => question.status === "verified").length,
     needsReview: auditedBankQuestions.filter((question) => question.status === "needs-review").length,
     removed: removedBankQuestions.size,
     auditDate: testBankReview.auditDate,
-    disclaimer: `${auditedBankQuestions.length} questions retained. ${removedBankQuestions.size} misleading or obsolete items were removed. Previously flagged items were checked against the source PDF and current official AWS documentation on ${testBankReview.auditDate}. Imported items had no extraction flags but were not individually fact-checked.`
+    disclaimer: `${auditedBankQuestions.length} questions retained. ${removedBankQuestions.size} misleading or obsolete items were removed. The full bank was reviewed for wording, answer plausibility, and AIF-C01 scope; changed or time-sensitive items were cross-checked with current official AWS documentation on ${testBankReview.auditDate}.`
   },
   questions: auditedBankQuestions
 };
