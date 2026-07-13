@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  322: verified(["exam"], {
+    prompt: "A healthcare company wants to create a model to improve disease diagnostics by analyzing patient voices. The company has recorded hundreds of voice samples and is filtering them by duration and language. Which phase of the ML lifecycle describes the current project phase?"
+  }),
   321: verified(["exam"], {
     answers: ["B"],
     answerText: "Conduct stakeholder interviews to refine use cases and set measurable goals",
