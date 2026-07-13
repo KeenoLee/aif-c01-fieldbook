@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  156: verified(["modelCards"], {
+    prompt: "Which AWS feature records critical details about ML models for governance and reporting?"
+  }),
   153: verified(["clarify"], {
     options: [
       { label: "A", text: "Amazon SageMaker Clarify" },
