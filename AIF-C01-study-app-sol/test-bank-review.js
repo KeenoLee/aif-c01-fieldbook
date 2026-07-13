@@ -45,6 +45,9 @@
     ...details
   });
 
+  const corrections = {
+  };
+
   window.AIF_TEST_BANK_REVIEW = {
     auditDate: "2026-07-13",
     removed: {
@@ -55,6 +58,7 @@
       265: "Removed: SageMaker Ground Truth Plus support ended on June 30, 2026."
     },
     questions: {
+      ...corrections,
       26: verified(["cloudTrail"]),
       33: verified(["jumpStart"]),
       38: verified(["knowledgeBases"]),
