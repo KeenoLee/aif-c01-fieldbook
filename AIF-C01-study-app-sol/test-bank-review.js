@@ -593,7 +593,9 @@
         "Labeled task-specific data -> Fine-tuning; Large volumes of unlabeled domain data -> Continued pre-training; Transfer knowledge from a larger model to a smaller model -> Distillation.",
         ["customization"]
       ),
-      368: verified(["exam"])
+      368: verified(["exam"], {
+        prompt: "A company wants to use foundation models (FMs) to develop and deploy an AI model. Which AWS service or resource will meet these requirements with the LEAST development effort?"
+      })
     }
   };
 })();
