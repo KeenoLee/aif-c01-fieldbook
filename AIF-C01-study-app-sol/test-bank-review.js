@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  221: verified(["exam"], {
+    prompt: "An ecommerce company wants to group customers based on purchase history and preferences to personalize its application. Which ML technique should the company use?"
+  }),
   218: verified(["exam"], {
     prompt: "A grocery store wants to create a chatbot that helps customers find products. The chatbot must check inventory in real time and provide each product's location. Which prompt engineering technique should the store use?"
   }),
