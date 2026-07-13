@@ -46,6 +46,10 @@
   });
 
   const corrections = {
+  184: verified(["exam"], {
+    prompt: "Which ML technique can help protect data privacy by training across decentralized data sources without centralizing the raw data?",
+    explanation: "Federated learning trains models across decentralized data while keeping raw data at its source. It can support privacy goals, although compliance still depends on the full system design and applicable requirements."
+  }),
   183: verified(["customization"], {
     options: [
       { label: "A", text: "Gather internal documents and industry materials, then merge them into one unlabeled file" },
