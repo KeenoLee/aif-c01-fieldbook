@@ -46,6 +46,16 @@
   });
 
   const corrections = {
+  201: verified(["exam"], {
+    prompt: "An education company wants to build a private tutor application. Users can enter text or provide a picture of a question. The application will respond with a written answer and an explanation. Which model type meets these requirements?",
+    options: [
+      { label: "A", text: "Computer vision model" },
+      { label: "B", text: "Multimodal LLM" },
+      { label: "C", text: "Diffusion model" },
+      { label: "D", text: "Text-to-speech model" }
+    ],
+    explanation: "A multimodal LLM can accept both text and image inputs and generate a written response."
+  }),
   184: verified(["exam"], {
     prompt: "Which ML technique can help protect data privacy by training across decentralized data sources without centralizing the raw data?",
     explanation: "Federated learning trains models across decentralized data while keeping raw data at its source. It can support privacy goals, although compliance still depends on the full system design and applicable requirements."
@@ -421,3 +431,4 @@
     }
   };
 })();
+
