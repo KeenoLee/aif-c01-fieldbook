@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  372: verified(["clarify"], {
+    prompt: "A company uses AI to recommend toys based on a customer's interests and age. The company notices that the AI tends to suggest stereotypically gendered toys. Which AWS service or feature should the company use to investigate the bias?"
+  }),
   370: verified(["agentEvaluation"], {
     explanation: "The Completeness metric measures whether a generated response addresses all aspects of the user's question."
   }),
