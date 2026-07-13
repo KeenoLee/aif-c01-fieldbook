@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  348: verified(["customization"], {
+    prompt: "A company has trained a foundation model (FM) to perform a specific task. The company needs to fine-tune the FM for a different but related task. Which method will meet this requirement?"
+  }),
   341: verified(["exam"], {
     explanation: "Clustering can group similar image regions without labeled examples. This can reveal candidate growth regions, although a production computer-vision solution would still need validation."
   }),
