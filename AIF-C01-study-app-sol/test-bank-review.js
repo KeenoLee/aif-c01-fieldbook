@@ -46,6 +46,10 @@
   });
 
   const corrections = {
+  240: verified(["exam"], {
+    prompt: "A bank is building a chatbot to answer questions about opening an account. The team supplies several example questions and ideal answers in each prompt so the model follows the desired pattern. Which prompt engineering technique is this?",
+    explanation: "Few-shot prompting provides several examples in the prompt to guide how the model performs a task."
+  }),
   230: verified(["responsibleAi"], {
     prompt: "A food service company wants to collect a dataset to predict customer food preferences. The company wants the dataset to include the preferences of all demographic groups. Which dataset characteristic does this scenario represent?"
   }),
