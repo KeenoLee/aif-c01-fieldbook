@@ -46,6 +46,10 @@
   });
 
   const corrections = {
+  217: verified(["responsibleAi"], {
+    prompt: "A bank is fine-tuning a large language model (LLM) on Amazon Bedrock to assist customers with loan questions. The bank wants to reduce the risk that the model reveals private customer data. Which solution is the most direct preventive control?",
+    explanation: "Remove personally identifiable information from training data before fine-tuning. Data minimization reduces the chance that sensitive details are learned; encryption at rest does not prevent a model from learning plaintext data during training."
+  }),
   201: verified(["exam"], {
     prompt: "An education company wants to build a private tutor application. Users can enter text or provide a picture of a question. The application will respond with a written answer and an explanation. Which model type meets these requirements?",
     options: [
