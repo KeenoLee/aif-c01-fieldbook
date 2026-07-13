@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  136: verified(["responsibleAi"], {
+    prompt: "Which option is a characteristic of AI governance frameworks for building trust and deploying human-centered AI technologies?"
+  }),
   133: verified(["exam"], {
     prompt: "A company wants to enhance response quality for a large language model (LLM) on complex problem-solving tasks. The tasks require detailed reasoning and a step-by-step explanation. Which prompt engineering technique meets these requirements?"
   }),
