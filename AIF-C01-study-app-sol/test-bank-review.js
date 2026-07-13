@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  316: verified(["exam"], {
+    prompt: "An AI practitioner is writing software code. The practitioner wants to quickly develop a test case and create documentation for the code. Which solution will meet these requirements with the LEAST effort?"
+  }),
   310: verified(["exam"], {
     options: [
       { label: "A", text: "Every employee at the company is individually ISO certified" },
