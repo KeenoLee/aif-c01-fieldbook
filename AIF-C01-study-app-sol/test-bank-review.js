@@ -46,6 +46,16 @@
   });
 
   const corrections = {
+  382: verified(["customization"], {
+    prompt: "What is continued pre-training?",
+    options: [
+      { label: "A", text: "Fine-tuning a pre-trained language model on labeled data for a specific task" },
+      { label: "B", text: "Training a pre-trained language model further on unlabeled data to improve its domain knowledge" },
+      { label: "C", text: "Training a language model from the beginning on a specific dataset" },
+      { label: "D", text: "Evaluating a pre-trained language model on a test set" }
+    ],
+    explanation: "Continued pre-training further trains an existing model on large volumes of unlabeled, domain-specific data."
+  }),
   375: verified(["cloudTrailLake"], {
     prompt: "A company that already uses AWS CloudTrail Lake trains image and text generation models on Amazon SageMaker AI and releases them through Amazon Bedrock. The company needs an immutable, queryable record of API activity from SageMaker AI, Amazon Bedrock, and AWS Identity and Access Management (IAM). Which AWS service meets these requirements?",
     explanation: "CloudTrail Lake event data stores retain CloudTrail events and support SQL queries. AWS closed CloudTrail Lake to new customers on May 31, 2026, but existing customers can continue using it."
