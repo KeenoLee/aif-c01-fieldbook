@@ -449,6 +449,12 @@
         ["exam"]
       ),
       286: verified(["novaReel"], {
+        options: [
+          { label: "A", text: "Use Amazon Titan Image Generator on Amazon Bedrock to create intermediate images, then use video-editing software" },
+          { label: "B", text: "Use Amazon Nova Canvas on Amazon Bedrock to create intermediate images, then use video-editing software" },
+          { label: "C", text: "Use Amazon Nova Reel on Amazon Bedrock to generate videos" },
+          { label: "D", text: "Use Amazon Nova Pro on Amazon Bedrock to generate videos" }
+        ],
         explanation: "Amazon Nova Reel is the video-generation model among the options. AWS currently lists Nova Reel 1.0 as Legacy with an end-of-life date of September 30, 2026, so confirm the model lifecycle when designing a new workload."
       }),
       290: verified(["clarify"]),
