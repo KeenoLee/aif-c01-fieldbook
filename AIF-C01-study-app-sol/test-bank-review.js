@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  15: verified(["exam"], {
+    prompt: "Which metric measures the runtime efficiency of operating AI models?"
+  }),
   12: verified(["exam"], {
     prompt: "A company wants to use generative AI to increase developer productivity during software development. The company wants to use Amazon Q Developer. What can Amazon Q Developer do to help the company meet these requirements?"
   }),
