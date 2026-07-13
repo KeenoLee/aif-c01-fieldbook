@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  223: verified(["exam"], {
+    explanation: "BLEU measures n-gram overlap between candidate and reference translations. Applying it consistently to outputs for the same source documents supports a relative comparison; it is not an absolute measure of translation quality."
+  }),
   221: verified(["exam"], {
     prompt: "An ecommerce company wants to group customers based on purchase history and preferences to personalize its application. Which ML technique should the company use?"
   }),
