@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  47: verified(["responsibleAi"], {
+    prompt: "A social media company wants to use a large language model (LLM) for content moderation. The company wants to evaluate the LLM outputs for bias and potential discrimination against specific groups or individuals. Which data source should the company use with the LEAST administrative effort?"
+  }),
   46: verified(["knowledgeBases"], {
     prompt: "A company wants to use large language models (LLMs) with Amazon Bedrock to develop a chat interface for the company's product manuals. The manuals are stored as PDF files. Which solution meets these requirements MOST cost-effectively?"
   }),
