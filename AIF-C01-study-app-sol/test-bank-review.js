@@ -46,6 +46,15 @@
   });
 
   const corrections = {
+  134: verified(["customization"], {
+    options: [
+      { label: "A", text: "Batch learning" },
+      { label: "B", text: "Continued pre-training" },
+      { label: "C", text: "Static training" },
+      { label: "D", text: "Latent training" }
+    ],
+    explanation: "Continued pre-training further trains a foundation model on recent, unlabeled domain data. It can update domain knowledge, but production systems still need evaluation and controlled update cycles."
+  }),
   131: verified(["exam"], {
     explanation: "Amazon Bedrock provides managed access to foundation models for building and scaling generative AI applications without managing the underlying model infrastructure."
   }),
