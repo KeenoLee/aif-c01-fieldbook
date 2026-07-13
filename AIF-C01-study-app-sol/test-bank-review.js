@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  341: verified(["exam"], {
+    explanation: "Clustering can group similar image regions without labeled examples. This can reveal candidate growth regions, although a production computer-vision solution would still need validation."
+  }),
   338: verified(["modelCards", "clarify"], {
     options: [
       { label: "A", text: "SageMaker Model Cards" },
