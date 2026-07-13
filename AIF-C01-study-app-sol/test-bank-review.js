@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  60: verified(["guardrails"], {
+    prompt: "A company has built a chatbot that can respond to natural language questions with images. The company wants to ensure that the chatbot does not return inappropriate or unwanted images. Which solution will meet these requirements?"
+  }),
   58: verified(["exam"], {
     options: [
       { label: "A", text: "Supervised learning with a manually curated dataset of good and bad responses" },
