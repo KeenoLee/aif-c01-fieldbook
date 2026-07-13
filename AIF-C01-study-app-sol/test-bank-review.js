@@ -46,6 +46,15 @@
   });
 
   const corrections = {
+  153: verified(["clarify"], {
+    options: [
+      { label: "A", text: "Amazon SageMaker Clarify" },
+      { label: "B", text: "Amazon Rekognition" },
+      { label: "C", text: "Amazon Comprehend" },
+      { label: "D", text: "Amazon Lex" }
+    ],
+    explanation: "SageMaker Clarify provides feature-attribution tools that help explain individual model predictions. Model Cards document model details but do not themselves calculate per-prediction explanations."
+  }),
   147: verified(["knowledgeBases"], {
     explanation: "Retrieval Augmented Generation (RAG) retrieves current information at query time, avoiding repeated model training when frequently asked questions change. Prompt engineering can then guide the response format and behavior."
   }),
