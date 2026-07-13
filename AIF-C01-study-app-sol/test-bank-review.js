@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  353: verified(["guardrails"], {
+    explanation: "Amazon Q Business application guardrails can restrict interactions to company-approved topics."
+  }),
   340: verified(["exam"], {
     explanation: "BLEU measures n-gram overlap between candidate and reference translations and is commonly used to compare translation quality. Human evaluation should supplement it for high-quality assessment."
   }),
