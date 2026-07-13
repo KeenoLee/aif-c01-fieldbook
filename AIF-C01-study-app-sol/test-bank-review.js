@@ -46,6 +46,16 @@
   });
 
   const corrections = {
+  92: verified(["exam"], {
+    prompt: "A software company builds tools for customers. The company wants to use generative AI to increase software development productivity. Which solution meets this requirement?",
+    options: [
+      { label: "A", text: "Use a binary classification model to generate code reviews" },
+      { label: "B", text: "Install a rule-based autocomplete tool in the company's developer tools" },
+      { label: "C", text: "Install a forecasting tool to predict potential code issues" },
+      { label: "D", text: "Use a generative AI code assistant to generate code from natural language" }
+    ],
+    explanation: "A generative AI code assistant can turn natural-language requests into code and help developers work more efficiently."
+  }),
   91: verified(["modelCards"], {
     explanation: "Amazon SageMaker Model Cards provide standardized documentation for intended uses, training details, evaluation results, risk ratings, and other governance information, supporting model sharing and audits."
   }),
