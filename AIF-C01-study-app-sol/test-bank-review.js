@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  66: verified(["s3Access"], {
+    explanation: "Create a separate Amazon Bedrock service role for each team and restrict each role to that team's customer data. This enforces team-specific access through IAM rather than relying on a customer name supplied in a request."
+  }),
   60: verified(["guardrails"], {
     prompt: "A company has built a chatbot that can respond to natural language questions with images. The company wants to ensure that the chatbot does not return inappropriate or unwanted images. Which solution will meet these requirements?"
   }),
