@@ -46,6 +46,14 @@
   });
 
   const corrections = {
+  243: verified(["knowledgeBases"], {
+    options: [
+      { label: "A", text: "Fine-tune an LLM on the company policy text by using Amazon SageMaker AI" },
+      { label: "B", text: "Select a foundation model from Amazon Bedrock without connecting the policy documents" },
+      { label: "C", text: "Create a Retrieval Augmented Generation workflow by using Amazon Bedrock Knowledge Bases" },
+      { label: "D", text: "Use Amazon Q Business to build a custom Q App without indexing the policy documents" }
+    ]
+  }),
   242: verified(["exam"], {
     options: [
       { label: "A", text: "Use Amazon Transcribe and Amazon Translate to generate subtitles in other languages" },
