@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  174: verified(["guardrails"], {
+    prompt: "A company deployed a Retrieval Augmented Generation (RAG) application on Amazon Bedrock that gathers financial news for daily newsletters. Users have reported politically influenced ideas in the newsletters. Which Amazon Bedrock Guardrails policy can identify and filter this content?"
+  }),
   168: verified(["exam"], {
     prompt: "Which technique breaks a complex task into smaller subtasks that are sent sequentially to a large language model (LLM)?"
   }),
