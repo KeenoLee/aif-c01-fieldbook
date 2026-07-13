@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  88: verified(["exam"], {
+    prompt: "A social media company wants to use a large language model (LLM) to summarize messages. The company has chosen several LLMs that are available on Amazon SageMaker JumpStart. The company wants to compare the toxicity of the models' outputs. Which strategy lets the company evaluate the LLMs with the LEAST operational overhead?"
+  }),
   81: verified(["customization"], {
     prompt: "Which option is a benefit of continued pre-training for a foundation model (FM)?",
     explanation: "Continued pre-training adapts a foundation model by training it further on unlabeled domain data, which can improve performance on domain-relevant tasks. It is distinct from supervised fine-tuning."
