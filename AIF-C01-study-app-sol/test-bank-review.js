@@ -46,6 +46,16 @@
   });
 
   const corrections = {
+  50: verified(["customOnDemand"], {
+    prompt: "A company uses an Amazon Bedrock base model to summarize documents. The company has trained a compatible custom model and wants to invoke it with pay-as-you-go pricing. Which action should the company take?",
+    options: [
+      { label: "A", text: "Create an on-demand custom model deployment in Amazon Bedrock" },
+      { label: "B", text: "Deploy the custom model to an Amazon SageMaker real-time endpoint" },
+      { label: "C", text: "Register the model with Amazon SageMaker Model Registry" },
+      { label: "D", text: "Grant model access in Amazon Bedrock" }
+    ],
+    explanation: "Supported custom models can be deployed for on-demand inference and invoked by using the deployment ARN. Provisioned Throughput remains another option for supported workloads, but it is no longer universally required."
+  }),
   47: verified(["responsibleAi"], {
     prompt: "A social media company wants to use a large language model (LLM) for content moderation. The company wants to evaluate the LLM outputs for bias and potential discrimination against specific groups or individuals. Which data source should the company use with the LEAST administrative effort?"
   }),
