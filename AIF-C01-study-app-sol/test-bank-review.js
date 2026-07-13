@@ -460,7 +460,8 @@
       290: verified(["clarify"]),
       291: hotspot(
         "Sentiment analysis of social posts -> Text data; Recognize traffic signs -> Image data; Customer demographics and purchases -> Tabular data; Historical stock-price forecasting -> Time-series data.",
-        ["exam"]
+        ["exam"],
+        { explanation: "Sentiment analysis uses text, traffic-sign recognition uses images, demographics and purchases are tabular, and historical stock prices form time-series data." }
       ),
       295: verified(["knowledgeBases"]),
       300: hotspot(
