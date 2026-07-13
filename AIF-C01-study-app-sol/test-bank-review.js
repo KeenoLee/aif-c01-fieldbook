@@ -46,6 +46,16 @@
   });
 
   const corrections = {
+  338: verified(["modelCards", "clarify"], {
+    options: [
+      { label: "A", text: "SageMaker Model Cards" },
+      { label: "B", text: "SageMaker Pipelines" },
+      { label: "C", text: "SageMaker Clarify" },
+      { label: "D", text: "SageMaker Model Monitor" },
+      { label: "E", text: "SageMaker Debugger" }
+    ],
+    explanation: "Model Cards document model details for transparency and governance. SageMaker Clarify detects bias and provides model-explanation tools."
+  }),
   322: verified(["exam"], {
     prompt: "A healthcare company wants to create a model to improve disease diagnostics by analyzing patient voices. The company has recorded hundreds of voice samples and is filtering them by duration and language. Which phase of the ML lifecycle describes the current project phase?"
   }),
