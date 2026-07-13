@@ -239,7 +239,8 @@
       ),
       143: hotspot(
         "Classification with no examples -> Zero-shot prompting; Classification after several examples -> Few-shot prompting; Ask for step-by-step reasoning -> Chain-of-thought prompting.",
-        ["exam"]
+        ["exam"],
+        { explanation: "Zero-shot prompting provides no examples, few-shot prompting provides several examples, and chain-of-thought prompting asks for a step-by-step reasoning process." }
       ),
       144: hotspot(
         "Hate, insults, violence, or misconduct -> Content filters; Illegal investment or legal-advice subjects -> Denied topics; Specific offensive terms -> Word filters; Ungrounded source-based responses -> Contextual grounding check.",
