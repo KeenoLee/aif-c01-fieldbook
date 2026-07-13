@@ -341,6 +341,8 @@ const state = {
   bankFilter: "all",
   bankIndex: 0,
   bankRevealed: false,
+  bankSelection: [],
+  bankSubmitted: false,
   exam: {
     running: false,
     index: 0,
@@ -708,6 +710,21 @@ function renderBankFilters() {
   `).join("");
 }
 
+function bankHasSelectableAnswer(question) {
+  const optionLabels = new Set(question.options.map((option) => option.label));
+  return question.answers.length > 0 && question.answers.every((answer) => optionLabels.has(answer));
+}
+
+function resetBankAnswerState() {
+  state.bankRevealed = false;
+  state.bankSelection = [];
+  state.bankSubmitted = false;
+}
+
+function sameBankAnswers(selected, expected) {
+  return selected.length === expected.length && selected.every((answer) => expected.includes(answer));
+}
+
 function renderBank() {
   const meta = testBankPayload.meta;
   $("#bankRecoveredTotal").textContent = String(meta.total);
@@ -757,13 +774,34 @@ function renderBank() {
   verdict.textContent = question.verdict;
   verdict.className = `quality-badge quality-badge--${question.status}`;
   $("#bankPrompt").textContent = question.prompt || "Question text needs source-PDF review.";
+  const hasSelectableAnswer = bankHasSelectableAnswer(question);
+  const isMultipleAnswer = question.answers.length > 1 && hasSelectableAnswer;
+  const selection = new Set(state.bankSelection);
+  const selectionHint = $("#bankSelectionHint");
+  selectionHint.textContent = hasSelectableAnswer
+    ? isMultipleAnswer
+      ? "Select all answers that apply, then submit."
+      : "Select one answer, then submit."
+    : "Answer checking is unavailable for this item. Use Reveal answer & explanation.";
 
   const options = $("#bankOptions");
   options.innerHTML = "";
   if (question.options.length) {
     question.options.forEach((option) => {
-      const row = document.createElement("div");
-      row.className = `bank-option${state.bankRevealed && question.answers.includes(option.label) ? " is-answer" : ""}`;
+      const isSelected = selection.has(option.label);
+      const isAnswer = question.answers.includes(option.label);
+      const row = document.createElement("button");
+      row.type = "button";
+      row.dataset.bankOption = option.label;
+      row.className = [
+        "bank-option",
+        isSelected ? "is-selected" : "",
+        (state.bankRevealed || state.bankSubmitted) && isAnswer ? "is-answer" : "",
+        state.bankSubmitted && isSelected && !isAnswer ? "is-wrong" : ""
+      ].filter(Boolean).join(" ");
+      row.setAttribute("aria-pressed", String(isSelected));
+      row.setAttribute("aria-describedby", "bankSelectionHint");
+      row.disabled = state.bankRevealed || state.bankSubmitted || !hasSelectableAnswer;
       const letter = document.createElement("span");
       letter.className = "bank-option__letter";
       letter.textContent = option.label;
@@ -779,6 +817,20 @@ function renderBank() {
       ? "This matching or ordering item was image-based in the PDF. Its answer mapping has been recovered and verified below."
       : "Answer options could not be reliably recovered from the PDF text layer.";
     options.appendChild(missing);
+  }
+
+  const response = $("#bankResponse");
+  response.hidden = !state.bankSubmitted && !state.bankRevealed;
+  response.className = "bank-response";
+  if (state.bankSubmitted) {
+    const isCorrect = sameBankAnswers(state.bankSelection, question.answers);
+    response.classList.add(isCorrect ? "is-correct" : "is-wrong");
+    response.textContent = isCorrect
+      ? "Correct. Your selection matches the answer key."
+      : `Not quite. The answer key is ${question.answers.join(", ")}.`;
+  } else if (state.bankRevealed) {
+    response.classList.add("is-revealed");
+    response.textContent = "Answer revealed. Review the explanation below.";
   }
 
   $("#bankAnswerPanel").hidden = !state.bankRevealed;
@@ -804,6 +856,9 @@ function renderBank() {
     sourceList.appendChild(link);
   });
   $("#revealBankAnswer").textContent = state.bankRevealed ? "Hide answer & explanation" : "Reveal answer & explanation";
+  const submitButton = $("#submitBankAnswer");
+  submitButton.disabled = !hasSelectableAnswer || state.bankSelection.length === 0 || state.bankSubmitted || state.bankRevealed;
+  submitButton.textContent = state.bankSubmitted ? "Answer submitted" : "Submit answer";
 
   const isReviewed = reviewed.has(question.id);
   const reviewButton = $("#markBankReviewed");
@@ -821,7 +876,35 @@ function moveBankQuestion(offset) {
   const questions = filteredBankQuestions();
   if (!questions.length) return;
   state.bankIndex = (state.bankIndex + offset + questions.length) % questions.length;
-  state.bankRevealed = false;
+  resetBankAnswerState();
+  renderBank();
+}
+
+function selectBankOption(label) {
+  const question = filteredBankQuestions()[state.bankIndex];
+  if (!question || !bankHasSelectableAnswer(question) || state.bankSubmitted || state.bankRevealed) return;
+  if (question.answers.length === 1) {
+    state.bankSelection = [label];
+  } else {
+    const selection = new Set(state.bankSelection);
+    if (selection.has(label)) selection.delete(label);
+    else selection.add(label);
+    state.bankSelection = Array.from(selection);
+  }
+  renderBank();
+}
+
+function submitBankAnswer() {
+  const question = filteredBankQuestions()[state.bankIndex];
+  if (!question || !bankHasSelectableAnswer(question)) {
+    showToast("This item does not have a selectable answer key. Use Reveal answer & explanation.");
+    return;
+  }
+  if (!state.bankSelection.length) {
+    showToast("Select an answer before submitting.");
+    return;
+  }
+  state.bankSubmitted = true;
   renderBank();
 }
 
@@ -983,7 +1066,7 @@ function bindEvents() {
     state.cardRevealed = false;
     state.bankFilter = "all";
     state.bankIndex = 0;
-    state.bankRevealed = false;
+    resetBankAnswerState();
     renderAll();
     resetExamView();
     showToast("Progress reset.");
@@ -1073,7 +1156,7 @@ function bindEvents() {
 
   $("#bankSearch").addEventListener("input", () => {
     state.bankIndex = 0;
-    state.bankRevealed = false;
+    resetBankAnswerState();
     renderBank();
   });
   $("#bankFilter").addEventListener("click", (event) => {
@@ -1081,7 +1164,7 @@ function bindEvents() {
     if (!button) return;
     state.bankFilter = button.dataset.bankFilter;
     state.bankIndex = 0;
-    state.bankRevealed = false;
+    resetBankAnswerState();
     renderBank();
   });
   $("#bankList").addEventListener("click", (event) => {
@@ -1091,9 +1174,14 @@ function bindEvents() {
     const index = questions.findIndex((question) => question.id === button.dataset.bankId);
     if (index < 0) return;
     state.bankIndex = index;
-    state.bankRevealed = false;
+    resetBankAnswerState();
     renderBank();
   });
+  $("#bankOptions").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-bank-option]");
+    if (button) selectBankOption(button.dataset.bankOption);
+  });
+  $("#submitBankAnswer").addEventListener("click", submitBankAnswer);
   $("#revealBankAnswer").addEventListener("click", () => {
     state.bankRevealed = !state.bankRevealed;
     renderBank();

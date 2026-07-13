@@ -256,7 +256,9 @@
               <span class="quality-badge" id="bankVerdict">Reviewed extraction</span>
             </div>
             <h3 id="bankPrompt"></h3>
+            <p class="bank-selection-hint" id="bankSelectionHint"></p>
             <div class="bank-options" id="bankOptions"></div>
+            <p class="bank-response" id="bankResponse" role="status" hidden></p>
 
             <div class="bank-answer" id="bankAnswerPanel" hidden>
               <div>
@@ -272,7 +274,8 @@
             </div>
 
             <div class="bank-question__actions">
-              <button class="button button--primary" id="revealBankAnswer" type="button">Reveal answer &amp; explanation</button>
+              <button class="button button--primary" id="submitBankAnswer" type="button" disabled>Submit answer</button>
+              <button class="button button--secondary" id="revealBankAnswer" type="button">Reveal answer &amp; explanation</button>
               <button class="button button--success" id="markBankReviewed" type="button">Mark reviewed</button>
             </div>
             <div class="bank-question__nav">

@@ -1644,19 +1644,45 @@ main {
 .bank-options {
   display: grid;
   gap: 9px;
-  margin: 28px 0;
+  margin: 12px 0 28px;
+}
+
+.bank-selection-hint {
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 12px;
 }
 
 .bank-option {
+  width: 100%;
   display: grid;
   grid-template-columns: 36px minmax(0, 1fr);
   align-items: start;
   gap: 12px;
   padding: 14px 16px;
+  color: var(--ink);
   background: var(--paper);
   border: 1px solid var(--line);
   font-size: 13px;
+  line-height: 1.5;
   overflow-wrap: anywhere;
+  text-align: left;
+}
+
+.bank-option:hover:not(:disabled) {
+  background: var(--blue-soft);
+  border-color: var(--blue);
+}
+
+.bank-option.is-selected {
+  background: var(--blue-soft);
+  border-color: var(--blue);
+  box-shadow: inset 4px 0 0 var(--blue);
+}
+
+.bank-option.is-selected .bank-option__letter {
+  color: #fff;
+  background: var(--blue);
 }
 
 .bank-option__letter {
@@ -1681,6 +1707,45 @@ main {
   color: #fff;
   background: var(--green);
   border-color: var(--green);
+}
+
+.bank-option.is-wrong {
+  background: var(--red-soft);
+  border-color: var(--red);
+  box-shadow: inset 4px 0 0 var(--red);
+}
+
+.bank-option.is-wrong .bank-option__letter {
+  color: #fff;
+  background: var(--red);
+  border-color: var(--red);
+}
+
+.bank-option:disabled {
+  color: var(--ink);
+  opacity: 1;
+}
+
+.bank-response {
+  margin: -12px 0 0;
+  padding: 12px 14px;
+  color: var(--blue);
+  background: var(--blue-soft);
+  border-left: 4px solid var(--blue);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.bank-response.is-correct {
+  color: var(--green);
+  background: var(--green-soft);
+  border-left-color: var(--green);
+}
+
+.bank-response.is-wrong {
+  color: var(--red);
+  background: var(--red-soft);
+  border-left-color: var(--red);
 }
 
 .bank-answer {
