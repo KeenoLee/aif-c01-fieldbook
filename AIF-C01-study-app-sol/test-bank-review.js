@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  370: verified(["agentEvaluation"], {
+    explanation: "The Completeness metric measures whether a generated response addresses all aspects of the user's question."
+  }),
   362: verified(["customOnDemand"], {
     prompt: "A company trains a compatible custom model in Amazon Bedrock to improve document summarization. The company wants to invoke the model with pay-as-you-go pricing. Which solution meets this requirement?",
     options: [
