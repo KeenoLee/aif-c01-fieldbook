@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  260: verified(["exam"], {
+    prompt: "A company has an ML model. The company wants to know how the model makes predictions. Which term refers to understanding model predictions?"
+  }),
   251: verified(["exam"], {
     prompt: "A design company is using a foundation model (FM) on Amazon Bedrock to generate images for various projects. The company wants to control how detailed or abstract each generated image appears. Which model parameter should the company modify?"
   }),
