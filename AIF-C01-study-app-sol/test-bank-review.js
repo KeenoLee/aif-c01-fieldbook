@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  106: verified(["exam"], {
+    explanation: "ROUGE compares overlap between generated text and reference text. Among the listed metrics, it best measures how closely the rewritten output resembles the provided examples."
+  }),
   96: verified(["exam"], {
     explanation: "The F1 score is the harmonic mean of precision and recall. It is useful when both false positives and false negatives matter, especially with imbalanced classes."
   }),
