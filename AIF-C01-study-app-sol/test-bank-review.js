@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  102: verified(["exam"], {
+    explanation: "BERTScore compares contextual embeddings in generated and reference text, making it well-suited to measuring semantic similarity for summarization output."
+  }),
   13: verified(["exam"], {
     explanation: "AWS PrivateLink provides private connectivity from a VPC to supported AWS services without requiring internet access, supporting network-isolation and compliance requirements."
   }),
