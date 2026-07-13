@@ -441,7 +441,8 @@
       276: verified(["clarify"]),
       280: hotspot(
         "Add external knowledge to an LLM -> Retrieval Augmented Generation (RAG); Perform an unseen task without examples -> Zero-shot learning; Perform a new task from a few examples -> Few-shot learning.",
-        ["knowledgeBases", "exam"]
+        ["knowledgeBases", "exam"],
+        { explanation: "RAG supplies external knowledge at query time. Zero-shot learning performs a task without examples, while few-shot learning uses a small number of examples." }
       ),
       283: hotspot(
         "Simulates human problem-solving capabilities -> Artificial intelligence; Learns from data to make predictions -> Machine learning; Uses multilayer neural networks -> Deep learning.",
