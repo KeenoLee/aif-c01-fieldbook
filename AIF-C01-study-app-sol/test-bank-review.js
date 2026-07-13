@@ -564,7 +564,8 @@
       ),
       311: hotspot(
         "Provide a small number of examples -> Few-shot prompting; Ask for a step-by-step process -> Chain-of-thought prompting; Provide no examples -> Zero-shot prompting.",
-        ["exam"]
+        ["exam"],
+        { explanation: "Few-shot prompting supplies a small number of examples, chain-of-thought prompting requests a step-by-step process, and zero-shot prompting supplies no examples." }
       ),
       313: hotspot(
         "1. Upload the text and image guides to Amazon S3; 2. Process the files with an Amazon Nova multimodal model; 3. Insert the extracted data into the product database.",
