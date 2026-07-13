@@ -1,0 +1,9 @@
+.DS_Store
+
+# Private study and test-bank material
+AIF-C01-study-materials/
+AIF-C01-study-app/
+
+# Temporary browser verification files
+AIF-C01-study-app-sol/*-check*.png
+AIF-C01-study-app-sol/smoke-check.html

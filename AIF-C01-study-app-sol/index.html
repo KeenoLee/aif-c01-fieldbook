@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f4f1e8" />
+    <meta name="description" content="A focused, offline study companion for the AWS Certified AI Practitioner AIF-C01 exam." />
+    <title>AIF-C01 Fieldbook</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#mainContent">Skip to study content</a>
+
+    <header class="masthead">
+      <div class="masthead__brand">
+        <div class="brand-stamp" aria-hidden="true">AIF<br />C01</div>
+        <div>
+          <p class="kicker">AWS Certified AI Practitioner</p>
+          <h1>AIF-C01 Fieldbook</h1>
+        </div>
+      </div>
+
+      <div class="exam-strip" aria-label="Exam reference">
+        <span><strong>65</strong> questions</span>
+        <span><strong>90</strong> minutes</span>
+        <span><strong>700</strong> pass score</span>
+      </div>
+
+      <div class="readiness" aria-label="Overall readiness">
+        <div class="readiness__label">
+          <span>Readiness</span>
+          <strong id="readinessValue">0%</strong>
+        </div>
+        <div class="meter" aria-hidden="true"><span id="readinessBar"></span></div>
+      </div>
+    </header>
+
+    <nav class="section-nav" aria-label="Study sections">
+      <button class="nav-tab is-active" type="button" data-view="today" aria-current="page">Today</button>
+      <button class="nav-tab" type="button" data-view="path">3-day path</button>
+      <button class="nav-tab" type="button" data-view="map">Domain map</button>
+      <button class="nav-tab" type="button" data-view="lab">Scenario lab</button>
+      <button class="nav-tab" type="button" data-view="cards">Flashcards</button>
+      <button class="nav-tab" type="button" data-view="exam">Practice exam</button>
+    </nav>
+
+    <main id="mainContent" tabindex="-1">
+      <section class="view is-active" id="today" aria-labelledby="todayTitle">
+        <div class="page-intro">
+          <div>
+            <p class="folio">Study desk / next best action</p>
+            <h2 id="todayTitle">Make the next 20 minutes count.</h2>
+          </div>
+          <p class="page-intro__copy" id="todayMessage">Start with the highest-weight domain, then prove recall with a short drill.</p>
+        </div>
+
+        <div class="desk-grid">
+          <section class="next-block" aria-labelledby="nextTitle">
+            <div class="section-heading">
+              <div>
+                <p class="label">Recommended next</p>
+                <h3 id="nextTitle">Foundation model applications</h3>
+              </div>
+              <span class="time-ticket" id="nextTime">20 min</span>
+            </div>
+            <p id="nextReason">This is 28% of the exam and deserves the most practice.</p>
+            <div class="next-steps" id="nextSteps"></div>
+            <button class="button button--primary" id="nextAction" type="button" data-jump="lab">Start scenario drill</button>
+          </section>
+
+          <aside class="pulse" aria-labelledby="pulseTitle">
+            <div class="section-heading">
+              <div>
+                <p class="label">Study pulse</p>
+                <h3 id="pulseTitle">Your evidence</h3>
+              </div>
+              <button class="text-button" id="resetProgress" type="button">Reset all</button>
+            </div>
+            <dl class="evidence-list">
+              <div><dt>Path tasks</dt><dd id="pulsePath">0 / 15</dd></div>
+              <div><dt>Scenarios solved</dt><dd id="pulseScenarios">0 / 15</dd></div>
+              <div><dt>Cards retained</dt><dd id="pulseCards">0 / 30</dd></div>
+              <div><dt>Best exam</dt><dd id="pulseExam">Not taken</dd></div>
+            </dl>
+            <p class="evidence-note">Readiness favors demonstrated recall. Marking a topic complete helps, but correct drills count more.</p>
+          </aside>
+        </div>
+
+        <section class="weight-section" aria-labelledby="weightTitle">
+          <div class="section-heading section-heading--rule">
+            <div>
+              <p class="label">Blueprint pressure</p>
+              <h3 id="weightTitle">Know where the points live</h3>
+            </div>
+            <p class="caption">Select a domain to inspect it.</p>
+          </div>
+          <div class="weight-track" id="weightTrack"></div>
+          <div class="domain-brief" id="domainBrief" aria-live="polite"></div>
+        </section>
+
+        <section class="quick-check" aria-labelledby="quickCheckTitle">
+          <div class="quick-check__prompt">
+            <p class="label">One-minute check</p>
+            <h3 id="quickCheckTitle">Current company policies change weekly. RAG or fine-tuning?</h3>
+          </div>
+          <div class="quick-check__actions" id="quickCheckActions">
+            <button class="choice-button" type="button" data-quick="rag">RAG</button>
+            <button class="choice-button" type="button" data-quick="fine-tuning">Fine-tuning</button>
+          </div>
+          <p class="quick-check__feedback" id="quickFeedback" aria-live="polite"></p>
+        </section>
+      </section>
+
+      <section class="view" id="path" aria-labelledby="pathTitle" hidden>
+        <div class="page-intro page-intro--compact">
+          <div>
+            <p class="folio">Three days / fifteen checkpoints</p>
+            <h2 id="pathTitle">A practical finish line.</h2>
+          </div>
+          <div class="intro-stat"><strong id="pathPercent">0%</strong><span>path complete</span></div>
+        </div>
+        <div class="day-switcher" id="daySwitcher" role="tablist" aria-label="Study day"></div>
+        <section class="day-sheet" id="daySheet" aria-live="polite"></section>
+      </section>
+
+      <section class="view" id="map" aria-labelledby="mapTitle" hidden>
+        <div class="page-intro page-intro--compact">
+          <div>
+            <p class="folio">Five domains / weighted recall</p>
+            <h2 id="mapTitle">The exam, without fog.</h2>
+          </div>
+          <p class="page-intro__copy">Use the domain notes for recognition, then test the distinctions in the lab.</p>
+        </div>
+        <div class="map-layout">
+          <aside class="domain-index" id="domainIndex" aria-label="Domain index"></aside>
+          <article class="domain-sheet" id="domainSheet" aria-live="polite"></article>
+        </div>
+        <section class="service-atlas" aria-labelledby="atlasTitle">
+          <div class="section-heading section-heading--rule">
+            <div>
+              <p class="label">Service atlas</p>
+              <h3 id="atlasTitle">Cue to AWS service</h3>
+            </div>
+            <label class="search-field">
+              <span class="sr-only">Filter services</span>
+              <input id="serviceSearch" type="search" placeholder="Search: speech, bias, audit..." autocomplete="off" />
+            </label>
+          </div>
+          <div class="service-list" id="serviceList"></div>
+          <p class="empty-state" id="serviceEmpty" hidden>No matching service. Try a task or exam cue.</p>
+        </section>
+      </section>
+
+      <section class="view" id="lab" aria-labelledby="labTitle" hidden>
+        <div class="page-intro page-intro--compact">
+          <div>
+            <p class="folio">Scenario lab / choose by evidence</p>
+            <h2 id="labTitle">Read the cue. Make the call.</h2>
+          </div>
+          <div class="intro-stat"><strong id="labAccuracy">--</strong><span>accuracy</span></div>
+        </div>
+        <div class="lab-toolbar">
+          <div class="segmented" id="labFilter" aria-label="Scenario domain filter"></div>
+          <button class="button button--secondary" id="resetLab" type="button">Reset lab</button>
+        </div>
+        <section class="drill-sheet" aria-live="polite">
+          <div class="drill-meta">
+            <span id="drillDomain">Domain 3</span>
+            <span id="drillPosition">1 of 15</span>
+          </div>
+          <h3 id="drillPrompt"></h3>
+          <p class="drill-instruction" id="drillInstruction"></p>
+          <div class="answer-grid" id="drillAnswers"></div>
+          <div class="rationale" id="drillRationale" hidden></div>
+          <div class="drill-footer">
+            <button class="text-button" id="previousDrill" type="button">Previous</button>
+            <button class="button button--primary" id="nextDrill" type="button">Next scenario</button>
+          </div>
+        </section>
+      </section>
+
+      <section class="view" id="cards" aria-labelledby="cardsTitle" hidden>
+        <div class="page-intro page-intro--compact">
+          <div>
+            <p class="folio">Active recall / honest confidence</p>
+            <h2 id="cardsTitle">Say it before you show it.</h2>
+          </div>
+          <div class="intro-stat"><strong id="cardRetained">0</strong><span>cards retained</span></div>
+        </div>
+        <div class="card-toolbar">
+          <div class="segmented" id="cardFilter" aria-label="Flashcard filter"></div>
+          <button class="button button--secondary" id="shuffleCards" type="button">Shuffle</button>
+        </div>
+        <section class="flash-stage">
+          <button class="flashcard" id="flashcard" type="button" aria-describedby="cardHint">
+            <span class="flashcard__domain" id="cardDomain">Domain 1</span>
+            <span class="flashcard__count" id="cardCount">1 / 30</span>
+            <span class="flashcard__prompt" id="cardPrompt"></span>
+            <span class="flashcard__answer" id="cardAnswer" hidden></span>
+            <span class="flashcard__reveal" id="cardReveal">Show answer</span>
+          </button>
+          <p class="keyboard-hint" id="cardHint">Space: reveal | Left/Right: move | 1: needs work | 2: retained</p>
+          <div class="card-actions">
+            <button class="button button--secondary" id="previousCard" type="button">Previous</button>
+            <button class="button button--danger" id="needsWorkCard" type="button">1 &nbsp; Needs work</button>
+            <button class="button button--success" id="retainCard" type="button">2 &nbsp; Retained</button>
+            <button class="button button--secondary" id="nextCard" type="button">Next</button>
+          </div>
+          <div class="deck-progress" aria-label="Flashcard retention progress">
+            <span id="deckProgressBar"></span>
+          </div>
+          <p class="caption" id="deckSummary"></p>
+        </section>
+      </section>
+
+      <section class="view" id="exam" aria-labelledby="examTitle" hidden>
+        <div class="page-intro page-intro--compact">
+          <div>
+            <p class="folio">25 questions / blueprint-weighted</p>
+            <h2 id="examTitle">Practice the decision, not the key.</h2>
+          </div>
+          <button class="button button--secondary" id="restartExam" type="button">New attempt</button>
+        </div>
+        <section class="exam-start" id="examStart">
+          <div>
+            <p class="label">Curated practice set</p>
+            <h3>One question at a time. Explanations after every answer.</h3>
+            <p>The mix follows the five domain weights. Questions are derived from the current study guide and vetted practice set, not copied from flagged test-bank answers.</p>
+          </div>
+          <dl class="exam-mix" id="examMix"></dl>
+          <button class="button button--primary" id="startExam" type="button">Start 25-question exam</button>
+        </section>
+        <section class="exam-sheet" id="examSheet" hidden aria-live="polite">
+          <div class="exam-progress-row">
+            <span id="examPosition">Question 1 of 25</span>
+            <span id="examScore">0 correct</span>
+          </div>
+          <div class="exam-progress" aria-hidden="true"><span id="examProgressBar"></span></div>
+          <p class="exam-domain" id="examDomain"></p>
+          <h3 id="examQuestion"></h3>
+          <div class="answer-grid answer-grid--exam" id="examAnswers"></div>
+          <div class="rationale" id="examRationale" hidden></div>
+          <button class="button button--primary exam-next" id="nextExamQuestion" type="button">Next question</button>
+        </section>
+        <section class="results-sheet" id="resultsSheet" hidden aria-live="polite"></section>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>AIF-C01 Fieldbook</span>
+      <span>Progress stays in this browser.</span>
+      <span>Offline and dependency-free.</span>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js"></script>
+  </body>
+</html>
