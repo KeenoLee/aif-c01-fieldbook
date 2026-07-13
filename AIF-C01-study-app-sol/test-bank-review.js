@@ -46,6 +46,15 @@
   });
 
   const corrections = {
+  310: verified(["exam"], {
+    options: [
+      { label: "A", text: "Every employee at the company is individually ISO certified" },
+      { label: "B", text: "Every AI model used by the company is individually ISO certified" },
+      { label: "C", text: "Every AI application team member is individually ISO certified" },
+      { label: "D", text: "The company's AI management system conforms to the applicable ISO standard" }
+    ],
+    explanation: "Organizational accreditation applies to the management system within the certification scope; it does not individually certify every employee or AI model."
+  }),
   303: verified(["promptAttack"], {
     options: [
       { label: "A", text: "Fine-tune the FM and assume it will reject every malicious prompt" },
