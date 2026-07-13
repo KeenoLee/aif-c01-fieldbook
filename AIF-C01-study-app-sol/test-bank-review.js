@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  319: verified(["exam"], {
+    prompt: "A company wants to develop an interpretable ML model to assess loan-application risk. Which type of ML model or algorithm will meet these requirements?"
+  }),
   316: verified(["exam"], {
     prompt: "An AI practitioner is writing software code. The practitioner wants to quickly develop a test case and create documentation for the code. Which solution will meet these requirements with the LEAST effort?"
   }),
