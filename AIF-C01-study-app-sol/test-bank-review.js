@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  340: verified(["exam"], {
+    explanation: "BLEU measures n-gram overlap between candidate and reference translations and is commonly used to compare translation quality. Human evaluation should supplement it for high-quality assessment."
+  }),
   323: verified(["exam"], {
     explanation: "Few-shot prompting supplies examples together with domain-specific context and explicit instructions, helping the assistant produce more relevant product suggestions."
   }),
