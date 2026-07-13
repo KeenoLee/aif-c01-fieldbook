@@ -46,6 +46,16 @@
   });
 
   const corrections = {
+  16: verified(["callAnalytics"], {
+    prompt: "A company is building a contact center application and wants to gain insights from customer conversations. The company wants to analyze the audio from customer calls and extract key information. Which solution meets these requirements?",
+    options: [
+      { label: "A", text: "Build a conversational chatbot by using Amazon Lex" },
+      { label: "B", text: "Analyze call recordings by using Amazon Transcribe Call Analytics" },
+      { label: "C", text: "Extract information from call recordings by using Amazon SageMaker Model Monitor" },
+      { label: "D", text: "Create classification labels by using Amazon Comprehend" }
+    ],
+    explanation: "Amazon Transcribe Call Analytics analyzes contact center audio and can provide transcripts, sentiment, issue detection, call categorization, and call summaries."
+  }),
   15: verified(["exam"], {
     prompt: "Which metric measures the runtime efficiency of operating AI models?"
   }),
