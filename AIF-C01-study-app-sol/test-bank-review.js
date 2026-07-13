@@ -549,7 +549,14 @@
         "Information that fits in one prompt -> Context window; Time to generate an output -> Latency; Simultaneous endpoint users or requests -> Concurrency.",
         ["exam", "inference"]
       ),
-      307: verified(["stability"]),
+      307: verified(["stability"], {
+        options: [
+          { label: "A", text: "Use Stable Diffusion 3.5 Large on Amazon Bedrock to generate images from text inputs" },
+          { label: "B", text: "Use Amazon Polly to create an audiobook from story text" },
+          { label: "C", text: "Use Amazon Rekognition to analyze images and detect text attributes" },
+          { label: "D", text: "Use a standard prompt template with Amazon Q Business to illustrate stories" }
+        ]
+      }),
       309: hotspot(
         "1. Define the business objective; 2. Process the data; 3. Develop and train the model; 4. Deploy the model.",
         ["exam"],
