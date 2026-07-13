@@ -46,6 +46,10 @@
   });
 
   const corrections = {
+  375: verified(["cloudTrailLake"], {
+    prompt: "A company that already uses AWS CloudTrail Lake trains image and text generation models on Amazon SageMaker AI and releases them through Amazon Bedrock. The company needs an immutable, queryable record of API activity from SageMaker AI, Amazon Bedrock, and AWS Identity and Access Management (IAM). Which AWS service meets these requirements?",
+    explanation: "CloudTrail Lake event data stores retain CloudTrail events and support SQL queries. AWS closed CloudTrail Lake to new customers on May 31, 2026, but existing customers can continue using it."
+  }),
   372: verified(["clarify"], {
     prompt: "A company uses AI to recommend toys based on a customer's interests and age. The company notices that the AI tends to suggest stereotypically gendered toys. Which AWS service or feature should the company use to investigate the bias?"
   }),
