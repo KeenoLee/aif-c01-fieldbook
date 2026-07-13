@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  123: verified(["responsibleAi"], {
+    explanation: "Human-in-the-loop review can be used after model generation to identify and handle biased, toxic, uncertain, or high-impact outputs."
+  }),
   102: verified(["exam"], {
     explanation: "BERTScore compares contextual embeddings in generated and reference text, making it well-suited to measuring semantic similarity for summarization output."
   }),
