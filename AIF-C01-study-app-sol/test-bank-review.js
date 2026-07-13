@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  27: verified(["inference"], {
+    prompt: "A company has developed an ML model for image classification. The company wants to deploy the model to production so that a web application can use it. The company needs to host the model and serve predictions without managing the underlying infrastructure. Which solution meets these requirements?"
+  }),
   19: verified(["customization"], {
     options: [
       { label: "A", text: "Provide labeled data with prompt and completion fields" },
