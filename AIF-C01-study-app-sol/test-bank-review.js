@@ -489,6 +489,12 @@
       ),
       234: verified(["guardrails"], {
         prompt: "A financial services company wants its generative AI chatbot to detect and filter responses that are not grounded in supplied reference information. Which solution meets this requirement?",
+        options: [
+          { label: "A", text: "Use AWS Config to query compliance metadata by using natural language" },
+          { label: "B", text: "Configure Amazon Bedrock Guardrails to evaluate user inputs and model responses" },
+          { label: "C", text: "Use Amazon Fraud Detector to detect potentially fraudulent online activities" },
+          { label: "D", text: "Use AWS Audit Manager to prepare IT audit and compliance reports" }
+        ],
         explanation: "Configure Amazon Bedrock Guardrails with contextual grounding checks. Guardrails can detect and filter ungrounded model responses; they reduce exposure to hallucinations but do not change or guarantee the behavior of the underlying foundation model."
       }),
       235: hotspot(
