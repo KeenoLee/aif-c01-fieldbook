@@ -46,6 +46,15 @@
   });
 
   const corrections = {
+  352: verified(["inference"], {
+    options: [
+      { label: "A", text: "Model customization options" },
+      { label: "B", text: "Inference latency" },
+      { label: "C", text: "Model training cost" },
+      { label: "D", text: "Model temperature" }
+    ],
+    explanation: "The application has a strict 30-second response deadline, so measured inference latency is the most direct model-selection criterion."
+  }),
   348: verified(["customization"], {
     prompt: "A company has trained a foundation model (FM) to perform a specific task. The company needs to fine-tune the FM for a different but related task. Which method will meet this requirement?"
   }),
