@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  294: verified(["exam"], {
+    explanation: "Conversion rate directly connects assistant interactions to completed purchases, making it the strongest listed measure of sales impact."
+  }),
   271: verified(["inference"], {
     options: [
       { label: "A", text: "Retrain the model. Monitor model drift by using Amazon SageMaker Clarify" },
