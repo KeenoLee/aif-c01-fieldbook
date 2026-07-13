@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  270: verified(["responsibleAi"], {
+    prompt: "A financial company uses an AI model to assign credit limits to new customers. The company wants to make the model's decision-making process more transparent to customers. Which solution meets these requirements?"
+  }),
   260: verified(["exam"], {
     prompt: "A company has an ML model. The company wants to know how the model makes predictions. Which term refers to understanding model predictions?"
   }),
