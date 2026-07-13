@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  96: verified(["exam"], {
+    explanation: "The F1 score is the harmonic mean of precision and recall. It is useful when both false positives and false negatives matter, especially with imbalanced classes."
+  }),
   92: verified(["exam"], {
     prompt: "A software company builds tools for customers. The company wants to use generative AI to increase software development productivity. Which solution meets this requirement?",
     options: [
