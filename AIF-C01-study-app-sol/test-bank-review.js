@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  168: verified(["exam"], {
+    prompt: "Which technique breaks a complex task into smaller subtasks that are sent sequentially to a large language model (LLM)?"
+  }),
   166: verified(["promptAttack"], {
     prompt: "Which security risk can arise when prompt engineering is used in a generative AI application?",
     options: [
