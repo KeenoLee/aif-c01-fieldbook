@@ -46,6 +46,16 @@
   });
 
   const corrections = {
+  71: verified(["responsibleAi"], {
+    options: [
+      { label: "A", text: "Include fairness metrics in model evaluation" },
+      { label: "B", text: "Adjust the temperature parameter without evaluating the effect" },
+      { label: "C", text: "Modify the training data to mitigate bias" },
+      { label: "D", text: "Maximize model complexity without testing generalization" },
+      { label: "E", text: "Apply prompt engineering without any safety evaluation" }
+    ],
+    explanation: "Fairness metrics and bias mitigation in training data directly address responsible development. The other choices omit evaluation or introduce unrelated changes."
+  }),
   66: verified(["s3Access"], {
     explanation: "Create a separate Amazon Bedrock service role for each team and restrict each role to that team's customer data. This enforces team-specific access through IAM rather than relying on a customer name supplied in a request."
   }),
