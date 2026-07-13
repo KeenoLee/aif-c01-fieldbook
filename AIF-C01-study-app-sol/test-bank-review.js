@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  187: verified(["exam"], {
+    explanation: "Fraudulent versus non-fraudulent is a two-class outcome, so binary classification is the appropriate task type."
+  }),
   136: verified(["responsibleAi"], {
     prompt: "Which option is a characteristic of AI governance frameworks for building trust and deploying human-centered AI technologies?"
   }),
