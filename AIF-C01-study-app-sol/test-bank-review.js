@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  177: verified(["responsibleAi"], {
+    prompt: "A hospital developed an AI system to provide personalized treatment recommendations. The system must provide the rationale behind its recommendations and make the insights accessible to doctors and patients. Which human-centered design principle does this scenario represent?"
+  }),
   174: verified(["guardrails"], {
     prompt: "A company deployed a Retrieval Augmented Generation (RAG) application on Amazon Bedrock that gathers financial news for daily newsletters. Users have reported politically influenced ideas in the newsletters. Which Amazon Bedrock Guardrails policy can identify and filter this content?"
   }),
