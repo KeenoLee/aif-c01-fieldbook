@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  75: verified(["exam"], {
+    prompt: "A company is building a chatbot to improve user experience. The company is using a large language model (LLM) from Amazon Bedrock for intent detection. The company wants to use few-shot learning to improve intent detection accuracy. Which additional data does the company need?"
+  }),
   73: verified(["exam"], {
     explanation: "BERT-based models are well suited to masked-language modeling tasks because they use surrounding context to predict missing tokens."
   }),
