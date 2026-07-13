@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  13: verified(["exam"], {
+    explanation: "AWS PrivateLink provides private connectivity from a VPC to supported AWS services without requiring internet access, supporting network-isolation and compliance requirements."
+  }),
   382: verified(["customization"], {
     prompt: "What is continued pre-training?",
     options: [
