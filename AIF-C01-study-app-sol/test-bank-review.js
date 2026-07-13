@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  378: verified(["exam"], {
+    explanation: "A multimodal LLM can process both text and image inputs and generate a written answer with an explanation."
+  }),
   353: verified(["guardrails"], {
     explanation: "Amazon Q Business application guardrails can restrict interactions to company-approved topics."
   }),
