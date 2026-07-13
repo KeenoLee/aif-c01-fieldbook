@@ -46,6 +46,12 @@
   });
 
   const corrections = {
+  117: verified(["exam"], {
+    prompt: "During which phase of the ML lifecycle should a team identify applicable compliance and regulatory requirements?",
+    answers: ["D"],
+    answerText: "Business goal identification",
+    explanation: "Compliance, risk, stakeholders, and success criteria should be identified while framing the business problem, before data is collected or a model is trained."
+  }),
   115: verified(["exam"], {
     explanation: "Assess whether the foundation model aligns with the intended use case and measurable business goal. A benchmark score alone does not establish business value."
   }),
