@@ -46,6 +46,11 @@
   });
 
   const corrections = {
+  321: verified(["exam"], {
+    answers: ["B"],
+    answerText: "Conduct stakeholder interviews to refine use cases and set measurable goals",
+    explanation: "Start by defining the business problem, stakeholders, measurable revenue goal, constraints, and success criteria. Implementing a tool before doing this does not establish that it will increase revenue."
+  }),
   319: verified(["exam"], {
     prompt: "A company wants to develop an interpretable ML model to assess loan-application risk. Which type of ML model or algorithm will meet these requirements?"
   }),
