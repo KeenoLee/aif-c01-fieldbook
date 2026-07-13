@@ -46,6 +46,14 @@
   });
 
   const corrections = {
+  108: verified(["exam"], {
+    options: [
+      { label: "A", text: "Create one prompt for all products, then manually edit every response to make it specific and concise" },
+      { label: "B", text: "Create prompts for each product category that highlight key features and specify the output format and length" },
+      { label: "C", text: "Include a diverse range of unrelated product features in each prompt" },
+      { label: "D", text: "Provide detailed product information without specifying the desired format or length" }
+    ]
+  }),
   106: verified(["exam"], {
     explanation: "ROUGE compares overlap between generated text and reference text. Among the listed metrics, it best measures how closely the rewritten output resembles the provided examples."
   }),
