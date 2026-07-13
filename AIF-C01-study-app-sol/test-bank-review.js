@@ -46,6 +46,10 @@
   });
 
   const corrections = {
+  81: verified(["customization"], {
+    prompt: "Which option is a benefit of continued pre-training for a foundation model (FM)?",
+    explanation: "Continued pre-training adapts a foundation model by training it further on unlabeled domain data, which can improve performance on domain-relevant tasks. It is distinct from supervised fine-tuning."
+  }),
   75: verified(["exam"], {
     prompt: "A company is building a chatbot to improve user experience. The company is using a large language model (LLM) from Amazon Bedrock for intent detection. The company wants to use few-shot learning to improve intent detection accuracy. Which additional data does the company need?"
   }),
