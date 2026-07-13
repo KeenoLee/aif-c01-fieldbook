@@ -46,6 +46,14 @@
   });
 
   const corrections = {
+  19: verified(["customization"], {
+    options: [
+      { label: "A", text: "Provide labeled data with prompt and completion fields" },
+      { label: "B", text: "Create a .txt training file that contains multiple lines in .csv format" },
+      { label: "C", text: "Purchase Provisioned Throughput for Amazon Bedrock" },
+      { label: "D", text: "Train the model on journals and textbooks" }
+    ]
+  }),
   18: verified(["exam"], {
     prompt: "An AI practitioner wants to use a foundation model (FM) to design a search application. The application must handle text and image queries. Which type of FM should the AI practitioner use to power the search application?",
     options: [
