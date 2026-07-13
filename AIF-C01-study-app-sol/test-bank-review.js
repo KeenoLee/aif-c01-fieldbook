@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  147: verified(["knowledgeBases"], {
+    explanation: "Retrieval Augmented Generation (RAG) retrieves current information at query time, avoiding repeated model training when frequently asked questions change. Prompt engineering can then guide the response format and behavior."
+  }),
   134: verified(["customization"], {
     options: [
       { label: "A", text: "Batch learning" },
