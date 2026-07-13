@@ -253,10 +253,17 @@ const quizQuestions = [
   ["d5", "Which statement best describes AWS shared responsibility?", ["AWS owns all customer data decisions", "Customers secure AWS data centers", "AWS secures the cloud; customers secure what they build and configure in it", "Customers have no AI security duties"], 2, "AWS is responsible for security of the cloud; customers are responsible for security in the cloud."]
 ].map(([domain, question, answers, correct, explanation], index) => ({ id: `q${index + 1}`, domain, question, answers, correct, explanation }));
 
+const testBankPayload = window.AIF_TEST_BANK || {
+  meta: { total: 0, answers: 0, explanations: 0, reviewed: 0, note: 0, caution: 0, claimedTotal: 385, disclaimer: "Question bank data is unavailable." },
+  questions: []
+};
+const testBankQuestions = testBankPayload.questions;
+
 const defaultProgress = () => ({
   pathDone: [],
   scenarioAnswers: {},
   cardStatus: {},
+  bankReviewed: [],
   bestExam: null,
   examAttempts: 0,
   quickDone: false
@@ -266,7 +273,9 @@ function loadProgress() {
   try {
     const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY));
     if (!parsed || typeof parsed !== "object") return defaultProgress();
-    return { ...defaultProgress(), ...parsed };
+    const progress = { ...defaultProgress(), ...parsed };
+    if (!Array.isArray(progress.bankReviewed)) progress.bankReviewed = [];
+    return progress;
   } catch (error) {
     return defaultProgress();
   }
@@ -282,6 +291,9 @@ const state = {
   cardIndex: 0,
   cardRevealed: false,
   cardOrder: flashcards.map((card) => card.id),
+  bankFilter: "all",
+  bankIndex: 0,
+  bankRevealed: false,
   exam: {
     running: false,
     index: 0,
@@ -355,6 +367,7 @@ function renderToday() {
   $("#pulsePath").textContent = `${state.progress.pathDone.length} / 15`;
   $("#pulseScenarios").textContent = `${scenarioEntries.length} / ${scenarios.length}`;
   $("#pulseCards").textContent = `${retained} / ${flashcards.length}`;
+  $("#pulseBank").textContent = `${state.progress.bankReviewed.length} / ${testBankPayload.meta.total}`;
   $("#pulseExam").textContent = state.progress.bestExam ? `${state.progress.bestExam.percent}%` : "Not taken";
 
   let recommendation;
@@ -614,6 +627,158 @@ function markCard(status) {
   renderCard();
 }
 
+function bankFilterDefinitions() {
+  const meta = testBankPayload.meta;
+  return [
+    { id: "all", label: `All ${meta.total}` },
+    { id: "reviewed", label: `Clean ${meta.reviewed}` },
+    { id: "note", label: `Notes ${meta.note}` },
+    { id: "caution", label: `Caution ${meta.caution}` },
+    { id: "unanswered", label: `No key ${meta.total - meta.answers}` }
+  ];
+}
+
+function filteredBankQuestions() {
+  const query = $("#bankSearch").value.trim().toLowerCase();
+  return testBankQuestions.filter((question) => {
+    const statusMatch = state.bankFilter === "all"
+      || question.status === state.bankFilter
+      || (state.bankFilter === "unanswered" && question.answers.length === 0);
+    if (!statusMatch) return false;
+    if (!query) return true;
+    const searchable = [
+      String(question.number),
+      question.prompt,
+      question.answerText,
+      question.explanation,
+      question.verdict,
+      ...question.options.map((option) => option.text)
+    ].join(" ").toLowerCase();
+    return searchable.includes(query);
+  });
+}
+
+function renderBankFilters() {
+  $("#bankFilter").innerHTML = bankFilterDefinitions().map((filter) => `
+    <button class="segment-button${state.bankFilter === filter.id ? " is-active" : ""}" type="button" data-bank-filter="${filter.id}" aria-pressed="${state.bankFilter === filter.id}">${filter.label}</button>
+  `).join("");
+}
+
+function renderBank() {
+  const meta = testBankPayload.meta;
+  $("#bankRecoveredTotal").textContent = String(meta.total);
+  $("#bankDisclaimer").textContent = meta.disclaimer;
+  $("#bankReviewedCount").textContent = String(state.progress.bankReviewed.length);
+  renderBankFilters();
+
+  const questions = filteredBankQuestions();
+  if (state.bankIndex >= questions.length) state.bankIndex = 0;
+  $("#bankMatchCount").textContent = `${questions.length} ${questions.length === 1 ? "match" : "matches"}`;
+  $("#bankEmpty").hidden = questions.length > 0;
+
+  const list = $("#bankList");
+  list.innerHTML = "";
+  const fragment = document.createDocumentFragment();
+  const reviewed = new Set(state.progress.bankReviewed);
+  questions.forEach((question, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = `bank-list-button${index === state.bankIndex ? " is-active" : ""}${reviewed.has(question.id) ? " is-reviewed" : ""}`;
+    button.dataset.bankId = question.id;
+    button.setAttribute("aria-current", index === state.bankIndex ? "true" : "false");
+
+    const number = document.createElement("span");
+    number.className = "bank-list-number";
+    number.textContent = `Q${question.number}`;
+    const copy = document.createElement("span");
+    copy.className = "bank-list-copy";
+    copy.textContent = question.prompt || "Question text needs source-PDF review.";
+    const dot = document.createElement("span");
+    dot.className = `quality-dot${question.status === "reviewed" ? "" : ` quality-dot--${question.status}`}`;
+    dot.setAttribute("aria-label", question.verdict);
+    button.append(number, copy, dot);
+    fragment.appendChild(button);
+  });
+  list.appendChild(fragment);
+
+  const detail = $("#bankQuestion");
+  if (!questions.length) {
+    detail.hidden = true;
+    return;
+  }
+  detail.hidden = false;
+  const question = questions[state.bankIndex];
+  $("#bankQuestionNumber").textContent = `Question ${question.number}`;
+  const verdict = $("#bankVerdict");
+  verdict.textContent = question.verdict;
+  verdict.className = `quality-badge${question.status === "reviewed" ? "" : ` quality-badge--${question.status}`}`;
+  $("#bankPrompt").textContent = question.prompt || "Question text needs source-PDF review.";
+
+  const options = $("#bankOptions");
+  options.innerHTML = "";
+  if (question.options.length) {
+    question.options.forEach((option) => {
+      const row = document.createElement("div");
+      row.className = `bank-option${state.bankRevealed && question.answers.includes(option.label) ? " is-answer" : ""}`;
+      const letter = document.createElement("span");
+      letter.className = "bank-option__letter";
+      letter.textContent = option.label;
+      const text = document.createElement("span");
+      text.textContent = option.text;
+      row.append(letter, text);
+      options.appendChild(row);
+    });
+  } else {
+    const missing = document.createElement("p");
+    missing.className = "empty-state";
+    missing.textContent = "Answer options could not be reliably recovered from the PDF text layer.";
+    options.appendChild(missing);
+  }
+
+  $("#bankAnswerPanel").hidden = !state.bankRevealed;
+  const answerLetters = question.answers.join(", ");
+  $("#bankAnswer").textContent = answerLetters
+    ? `${answerLetters}${question.answerText ? ` - ${question.answerText}` : ""}`
+    : "Answer key not recovered - verify in the source PDF.";
+  $("#bankExplanation").textContent = question.explanation || "No explanation was recoverable for this question.";
+  const flags = $("#bankFlags");
+  flags.hidden = question.flags.length === 0;
+  flags.textContent = question.flags.length ? `Review flags: ${question.flags.join(" | ")}` : "";
+  $("#revealBankAnswer").textContent = state.bankRevealed ? "Hide answer & explanation" : "Reveal answer & explanation";
+
+  const isReviewed = reviewed.has(question.id);
+  const reviewButton = $("#markBankReviewed");
+  reviewButton.textContent = isReviewed ? "Reviewed" : "Mark reviewed";
+  reviewButton.setAttribute("aria-pressed", String(isReviewed));
+  $("#bankPosition").textContent = `${state.bankIndex + 1} of ${questions.length}`;
+  $("#previousBankQuestion").disabled = questions.length <= 1;
+  $("#nextBankQuestion").disabled = questions.length <= 1;
+
+  const activeListItem = $(".bank-list-button.is-active", list);
+  if (activeListItem) activeListItem.scrollIntoView({ block: "nearest" });
+}
+
+function moveBankQuestion(offset) {
+  const questions = filteredBankQuestions();
+  if (!questions.length) return;
+  state.bankIndex = (state.bankIndex + offset + questions.length) % questions.length;
+  state.bankRevealed = false;
+  renderBank();
+}
+
+function toggleBankReviewed() {
+  const question = filteredBankQuestions()[state.bankIndex];
+  if (!question) return;
+  const reviewed = new Set(state.progress.bankReviewed);
+  if (reviewed.has(question.id)) reviewed.delete(question.id);
+  else reviewed.add(question.id);
+  state.progress.bankReviewed = Array.from(reviewed);
+  saveProgress();
+  renderBank();
+  renderToday();
+  showToast(reviewed.has(question.id) ? "Question marked reviewed." : "Question returned to review queue.");
+}
+
 function renderExamMix() {
   $("#examMix").innerHTML = domains.map((domain) => {
     const count = quizQuestions.filter((question) => question.domain === domain.id).length;
@@ -757,6 +922,9 @@ function bindEvents() {
     state.cardFilter = "all";
     state.cardIndex = 0;
     state.cardRevealed = false;
+    state.bankFilter = "all";
+    state.bankIndex = 0;
+    state.bankRevealed = false;
     renderAll();
     resetExamView();
     showToast("Progress reset.");
@@ -844,6 +1012,37 @@ function bindEvents() {
     showToast("Deck shuffled.");
   });
 
+  $("#bankSearch").addEventListener("input", () => {
+    state.bankIndex = 0;
+    state.bankRevealed = false;
+    renderBank();
+  });
+  $("#bankFilter").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-bank-filter]");
+    if (!button) return;
+    state.bankFilter = button.dataset.bankFilter;
+    state.bankIndex = 0;
+    state.bankRevealed = false;
+    renderBank();
+  });
+  $("#bankList").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-bank-id]");
+    if (!button) return;
+    const questions = filteredBankQuestions();
+    const index = questions.findIndex((question) => question.id === button.dataset.bankId);
+    if (index < 0) return;
+    state.bankIndex = index;
+    state.bankRevealed = false;
+    renderBank();
+  });
+  $("#revealBankAnswer").addEventListener("click", () => {
+    state.bankRevealed = !state.bankRevealed;
+    renderBank();
+  });
+  $("#markBankReviewed").addEventListener("click", toggleBankReviewed);
+  $("#previousBankQuestion").addEventListener("click", () => moveBankQuestion(-1));
+  $("#nextBankQuestion").addEventListener("click", () => moveBankQuestion(1));
+
   $("#startExam").addEventListener("click", startExam);
   $("#restartExam").addEventListener("click", resetExamView);
   $("#examAnswers").addEventListener("click", (event) => {
@@ -854,7 +1053,13 @@ function bindEvents() {
 
   document.addEventListener("keydown", (event) => {
     const activeView = $(".view.is-active");
-    if (!activeView || activeView.id !== "cards" || /INPUT|TEXTAREA|SELECT/.test(event.target.tagName)) return;
+    if (!activeView || /INPUT|TEXTAREA|SELECT/.test(event.target.tagName)) return;
+    if (activeView.id === "bank") {
+      if (event.key === "ArrowLeft") moveBankQuestion(-1);
+      else if (event.key === "ArrowRight") moveBankQuestion(1);
+      return;
+    }
+    if (activeView.id !== "cards") return;
     if (event.code === "Space") {
       event.preventDefault();
       state.cardRevealed = !state.cardRevealed;
@@ -881,6 +1086,7 @@ function renderAll() {
   renderServices();
   renderLab();
   renderCard();
+  renderBank();
   renderExamMix();
   restoreQuickCheck();
   updateReadiness();

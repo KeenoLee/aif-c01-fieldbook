@@ -41,6 +41,7 @@
       <button class="nav-tab" type="button" data-view="map">Domain map</button>
       <button class="nav-tab" type="button" data-view="lab">Scenario lab</button>
       <button class="nav-tab" type="button" data-view="cards">Flashcards</button>
+      <button class="nav-tab" type="button" data-view="bank">Question bank</button>
       <button class="nav-tab" type="button" data-view="exam">Practice exam</button>
     </nav>
 
@@ -80,6 +81,7 @@
               <div><dt>Path tasks</dt><dd id="pulsePath">0 / 15</dd></div>
               <div><dt>Scenarios solved</dt><dd id="pulseScenarios">0 / 15</dd></div>
               <div><dt>Cards retained</dt><dd id="pulseCards">0 / 30</dd></div>
+              <div><dt>Bank reviewed</dt><dd id="pulseBank">0 / 385</dd></div>
               <div><dt>Best exam</dt><dd id="pulseExam">Not taken</dd></div>
             </dl>
             <p class="evidence-note">Readiness favors demonstrated recall. Marking a topic complete helps, but correct drills count more.</p>
@@ -213,6 +215,74 @@
         </section>
       </section>
 
+      <section class="view" id="bank" aria-labelledby="bankTitle" hidden>
+        <div class="page-intro page-intro--compact">
+          <div>
+            <p class="folio">Source bank / recovered from PDF</p>
+            <h2 id="bankTitle">Work through the full bank.</h2>
+          </div>
+          <div class="intro-stat"><strong id="bankReviewedCount">0</strong><span>questions reviewed</span></div>
+        </div>
+
+        <section class="bank-notice" aria-label="Question bank extraction notice">
+          <div>
+            <p class="label">Extraction quality</p>
+            <h3><span id="bankRecoveredTotal">385</span> questions recovered from the source PDF.</h3>
+          </div>
+          <p id="bankDisclaimer">This bank was recovered from a watermark-damaged PDF. Use the quality label on every question and verify caution items before memorizing them.</p>
+        </section>
+
+        <div class="bank-toolbar">
+          <label class="search-field search-field--bank">
+            <span class="sr-only">Search the question bank</span>
+            <input id="bankSearch" type="search" placeholder="Search question, service, answer..." autocomplete="off" />
+          </label>
+          <div class="segmented segmented--bank" id="bankFilter" aria-label="Question quality filter"></div>
+        </div>
+
+        <div class="bank-workbench">
+          <aside class="bank-index-panel" aria-labelledby="bankMatchesTitle">
+            <div class="bank-index-heading">
+              <h3 id="bankMatchesTitle">Questions</h3>
+              <span id="bankMatchCount">385 matches</span>
+            </div>
+            <div class="bank-list" id="bankList"></div>
+            <p class="empty-state" id="bankEmpty" hidden>No questions match this search and quality filter.</p>
+          </aside>
+
+          <article class="bank-question" id="bankQuestion" aria-live="polite">
+            <div class="bank-question__meta">
+              <span id="bankQuestionNumber">Question 1</span>
+              <span class="quality-badge" id="bankVerdict">Reviewed extraction</span>
+            </div>
+            <h3 id="bankPrompt"></h3>
+            <div class="bank-options" id="bankOptions"></div>
+
+            <div class="bank-answer" id="bankAnswerPanel" hidden>
+              <div>
+                <p class="label">Extracted answer</p>
+                <h4 id="bankAnswer"></h4>
+              </div>
+              <div>
+                <p class="label">Source explanation</p>
+                <p id="bankExplanation"></p>
+              </div>
+              <div class="bank-flags" id="bankFlags" hidden></div>
+            </div>
+
+            <div class="bank-question__actions">
+              <button class="button button--primary" id="revealBankAnswer" type="button">Reveal answer &amp; explanation</button>
+              <button class="button button--success" id="markBankReviewed" type="button">Mark reviewed</button>
+            </div>
+            <div class="bank-question__nav">
+              <button class="text-button" id="previousBankQuestion" type="button">Previous</button>
+              <span id="bankPosition">1 of 385</span>
+              <button class="text-button" id="nextBankQuestion" type="button">Next</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
       <section class="view" id="exam" aria-labelledby="examTitle" hidden>
         <div class="page-intro page-intro--compact">
           <div>
@@ -253,6 +323,7 @@
     </footer>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="test-bank-data.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
