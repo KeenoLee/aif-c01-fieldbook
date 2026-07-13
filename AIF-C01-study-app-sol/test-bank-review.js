@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  323: verified(["exam"], {
+    explanation: "Few-shot prompting supplies examples together with domain-specific context and explicit instructions, helping the assistant produce more relevant product suggestions."
+  }),
   299: verified(["modelCards"], {
     prompt: "A company has developed an ML model to approve or reject loan applications. The model's decision-making process must be transparent and explainable for regulatory compliance. The company must document the model and its decision process for audit purposes. Which solution meets these requirements?"
   }),
