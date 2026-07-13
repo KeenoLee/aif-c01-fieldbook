@@ -18,7 +18,16 @@
     healthScribe: ["AWS HealthScribe", "https://docs.aws.amazon.com/transcribe/latest/dg/health-scribe.html"],
     nova: ["Amazon Nova model categories", "https://docs.aws.amazon.com/nova/latest/userguide/what-is-nova.html"],
     novaReel: ["Amazon Nova Reel model card", "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-amazon-nova-reel.html"],
-    stability: ["Stable Diffusion 3.5 Large on Bedrock", "https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-diffusion-3-5-large.html"]
+    stability: ["Stable Diffusion 3.5 Large on Bedrock", "https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-diffusion-3-5-large.html"],
+    s3Access: ["Configure access to Amazon S3 buckets for Amazon Bedrock", "https://docs.aws.amazon.com/bedrock/latest/userguide/s3-bucket-access.html"],
+    callAnalytics: ["Analyzing call center audio with Call Analytics", "https://docs.aws.amazon.com/transcribe/latest/dg/call-analytics.html"],
+    customOnDemand: ["Deploy a custom model for on-demand inference", "https://docs.aws.amazon.com/bedrock/latest/userguide/deploy-custom-model-on-demand.html"],
+    glacier: ["Amazon S3 Glacier storage classes", "https://docs.aws.amazon.com/AmazonS3/latest/userguide/glacier-storage-classes.html"],
+    promptAttack: ["Detect prompt attacks with Amazon Bedrock Guardrails", "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-prompt-attack.html"],
+    jumpStartAccess: ["Restrict access to JumpStart gated models", "https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-curated-hubs-gated-model-access.html"],
+    cloudTrailLake: ["Working with AWS CloudTrail Lake", "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-lake.html"],
+    agentEvaluation: ["Review metrics for RAG evaluations that use LLMs", "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-eval-llm-results.html"],
+    sageMakerCatalog: ["Amazon SageMaker and Amazon DataZone", "https://docs.aws.amazon.com/datazone/latest/userguide/sagemaker-datazone.html"]
   };
 
   const refs = (...keys) => keys.map((key) => ({ title: sources[key][0], url: sources[key][1] }));
