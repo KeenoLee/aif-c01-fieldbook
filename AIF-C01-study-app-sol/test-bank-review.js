@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  250: verified(["canvas"], {
+    explanation: "Amazon SageMaker Canvas provides a visual, no-code interface for preparing data and building, evaluating, and deploying ML models."
+  }),
   195: verified(["guardrails"], {
     explanation: "Amazon Bedrock Guardrails can apply configurable safeguards to model inputs and outputs. A patient-facing medical application still requires broader clinical, legal, privacy, and human-oversight controls."
   }),
