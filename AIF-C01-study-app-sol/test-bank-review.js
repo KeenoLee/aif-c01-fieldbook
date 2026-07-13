@@ -46,6 +46,16 @@
   });
 
   const corrections = {
+  166: verified(["promptAttack"], {
+    prompt: "Which security risk can arise when prompt engineering is used in a generative AI application?",
+    options: [
+      { label: "A", text: "Prompt engineering guarantees deterministic output and removes the need for validation" },
+      { label: "B", text: "Attackers can use prompt injection to override instructions or expose sensitive information" },
+      { label: "C", text: "Prompt engineering prevents all forms of data poisoning" },
+      { label: "D", text: "A well-written prompt guarantees reliable output for all real-world inputs" }
+    ],
+    explanation: "Prompt injection is an application-level security risk in which malicious user input attempts to override developer instructions or extract confidential information."
+  }),
   159: verified(["exam"], {
     options: [
       { label: "A", text: "A method for compressing large datasets" },
