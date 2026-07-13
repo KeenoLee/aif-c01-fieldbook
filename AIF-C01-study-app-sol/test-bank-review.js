@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  12: verified(["exam"], {
+    prompt: "A company wants to use generative AI to increase developer productivity during software development. The company wants to use Amazon Q Developer. What can Amazon Q Developer do to help the company meet these requirements?"
+  }),
   9: verified(["s3Access"], {
     prompt: "A company wants to use a foundation model (FM) on Amazon Bedrock for a chatbot. The FM needs to access data in an Amazon S3 bucket that is encrypted with an AWS KMS key (SSE-KMS). The FM cannot access the data because its service role lacks permission to use the key. Which solution meets these requirements?",
     explanation: "Grant the Amazon Bedrock service role permission to access the S3 data and decrypt it with the correct AWS KMS key. SSE-S3 uses Amazon S3 managed keys and does not require a customer KMS decrypt permission."
