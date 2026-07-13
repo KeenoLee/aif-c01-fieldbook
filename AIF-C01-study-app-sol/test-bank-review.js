@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  157: verified(["exam"], {
+    explanation: "Summarization generates a concise version of longer text, making it a generative AI use case. The other choices are predictive or grouping tasks."
+  }),
   156: verified(["modelCards"], {
     prompt: "Which AWS feature records critical details about ML models for governance and reporting?"
   }),
