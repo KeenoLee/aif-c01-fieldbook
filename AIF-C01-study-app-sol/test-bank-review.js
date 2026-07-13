@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  266: verified(["exam"], {
+    prompt: "An online media-streaming company wants to offer natural-language-based image search and filtering. The company needs a vector database that supports similarity search and nearest-neighbor queries. Which AWS service meets these requirements?"
+  }),
   250: verified(["canvas"], {
     explanation: "Amazon SageMaker Canvas provides a visual, no-code interface for preparing data and building, evaluating, and deploying ML models."
   }),
