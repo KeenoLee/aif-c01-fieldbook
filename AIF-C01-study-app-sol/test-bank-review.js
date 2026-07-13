@@ -46,6 +46,15 @@
   });
 
   const corrections = {
+  303: verified(["promptAttack"], {
+    options: [
+      { label: "A", text: "Fine-tune the FM and assume it will reject every malicious prompt" },
+      { label: "B", text: "Configure an Amazon Bedrock Guardrails prompt-attack filter for user input" },
+      { label: "C", text: "Change to another FM without adding application-level controls" },
+      { label: "D", text: "Use chain-of-thought prompting to produce secure responses" }
+    ],
+    explanation: "Amazon Bedrock Guardrails includes a prompt-attack filter that can detect jailbreaks and prompt injection in tagged user input."
+  }),
   298: verified(["exam"], {
     prompt: "A media streaming platform wants to provide movie recommendations to users based on their account history. Which AWS service meets these requirements?"
   }),
