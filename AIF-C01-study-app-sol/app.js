@@ -253,9 +253,56 @@ const quizQuestions = [
   ["d5", "Which statement best describes AWS shared responsibility?", ["AWS owns all customer data decisions", "Customers secure AWS data centers", "AWS secures the cloud; customers secure what they build and configure in it", "Customers have no AI security duties"], 2, "AWS is responsible for security of the cloud; customers are responsible for security in the cloud."]
 ].map(([domain, question, answers, correct, explanation], index) => ({ id: `q${index + 1}`, domain, question, answers, correct, explanation }));
 
-const testBankPayload = window.AIF_TEST_BANK || {
+const rawTestBankPayload = window.AIF_TEST_BANK || {
   meta: { total: 0, answers: 0, explanations: 0, reviewed: 0, note: 0, caution: 0, claimedTotal: 385, disclaimer: "Question bank data is unavailable." },
   questions: []
+};
+const testBankReview = window.AIF_TEST_BANK_REVIEW || { auditDate: "", removed: {}, questions: {} };
+const removedBankQuestions = new Set(Object.keys(testBankReview.removed).map(Number));
+
+function cleanHotspotPrompt(prompt) {
+  return prompt
+    .replace(/^HOTSPOT\s+/i, "")
+    .replace(/\s+Hot Area:.*$/i, "")
+    .trim();
+}
+
+const auditedBankQuestions = rawTestBankPayload.questions
+  .filter((question) => !removedBankQuestions.has(question.number))
+  .map((question) => {
+    const audit = testBankReview.questions[question.number];
+    if (!audit) {
+      return {
+        ...question,
+        status: "imported",
+        verdict: "Imported without extraction flags",
+        sources: []
+      };
+    }
+    return {
+      ...question,
+      ...audit,
+      prompt: audit.prompt || (audit.format ? cleanHotspotPrompt(question.prompt) : question.prompt),
+      answers: audit.answers || question.answers,
+      explanation: audit.explanation || question.explanation,
+      sources: audit.sources || []
+    };
+  });
+
+const testBankPayload = {
+  meta: {
+    ...rawTestBankPayload.meta,
+    total: auditedBankQuestions.length,
+    answers: auditedBankQuestions.filter((question) => question.answers.length > 0).length,
+    explanations: auditedBankQuestions.filter((question) => question.explanation).length,
+    imported: auditedBankQuestions.filter((question) => question.status === "imported").length,
+    verified: auditedBankQuestions.filter((question) => question.status === "verified").length,
+    needsReview: auditedBankQuestions.filter((question) => question.status === "needs-review").length,
+    removed: removedBankQuestions.size,
+    auditDate: testBankReview.auditDate,
+    disclaimer: `${auditedBankQuestions.length} questions retained. ${removedBankQuestions.size} misleading or obsolete items were removed. Previously flagged items were checked against the source PDF and current official AWS documentation on ${testBankReview.auditDate}. Imported items had no extraction flags but were not individually fact-checked.`
+  },
+  questions: auditedBankQuestions
 };
 const testBankQuestions = testBankPayload.questions;
 
@@ -631,19 +678,16 @@ function bankFilterDefinitions() {
   const meta = testBankPayload.meta;
   return [
     { id: "all", label: `All ${meta.total}` },
-    { id: "reviewed", label: `Clean ${meta.reviewed}` },
-    { id: "note", label: `Notes ${meta.note}` },
-    { id: "caution", label: `Caution ${meta.caution}` },
-    { id: "unanswered", label: `No key ${meta.total - meta.answers}` }
-  ];
+    { id: "imported", label: `Imported ${meta.imported}` },
+    { id: "verified", label: `Verified ${meta.verified}` },
+    { id: "needs-review", label: `Needs review ${meta.needsReview}` }
+  ].filter((filter) => filter.id === "all" || !filter.label.endsWith(" 0"));
 }
 
 function filteredBankQuestions() {
   const query = $("#bankSearch").value.trim().toLowerCase();
   return testBankQuestions.filter((question) => {
-    const statusMatch = state.bankFilter === "all"
-      || question.status === state.bankFilter
-      || (state.bankFilter === "unanswered" && question.answers.length === 0);
+    const statusMatch = state.bankFilter === "all" || question.status === state.bankFilter;
     if (!statusMatch) return false;
     if (!query) return true;
     const searchable = [
@@ -694,7 +738,7 @@ function renderBank() {
     copy.className = "bank-list-copy";
     copy.textContent = question.prompt || "Question text needs source-PDF review.";
     const dot = document.createElement("span");
-    dot.className = `quality-dot${question.status === "reviewed" ? "" : ` quality-dot--${question.status}`}`;
+    dot.className = `quality-dot quality-dot--${question.status}`;
     dot.setAttribute("aria-label", question.verdict);
     button.append(number, copy, dot);
     fragment.appendChild(button);
@@ -708,10 +752,10 @@ function renderBank() {
   }
   detail.hidden = false;
   const question = questions[state.bankIndex];
-  $("#bankQuestionNumber").textContent = `Question ${question.number}`;
+  $("#bankQuestionNumber").textContent = `Question ${question.number}${question.format ? ` · ${question.format}` : ""}`;
   const verdict = $("#bankVerdict");
   verdict.textContent = question.verdict;
-  verdict.className = `quality-badge${question.status === "reviewed" ? "" : ` quality-badge--${question.status}`}`;
+  verdict.className = `quality-badge quality-badge--${question.status}`;
   $("#bankPrompt").textContent = question.prompt || "Question text needs source-PDF review.";
 
   const options = $("#bankOptions");
@@ -731,19 +775,34 @@ function renderBank() {
   } else {
     const missing = document.createElement("p");
     missing.className = "empty-state";
-    missing.textContent = "Answer options could not be reliably recovered from the PDF text layer.";
+    missing.textContent = question.format
+      ? "This matching or ordering item was image-based in the PDF. Its answer mapping has been recovered and verified below."
+      : "Answer options could not be reliably recovered from the PDF text layer.";
     options.appendChild(missing);
   }
 
   $("#bankAnswerPanel").hidden = !state.bankRevealed;
   const answerLetters = question.answers.join(", ");
-  $("#bankAnswer").textContent = answerLetters
+  $("#bankAnswer").textContent = question.format
+    ? question.answerText
+    : answerLetters
     ? `${answerLetters}${question.answerText ? ` - ${question.answerText}` : ""}`
     : "Answer key not recovered - verify in the source PDF.";
   $("#bankExplanation").textContent = question.explanation || "No explanation was recoverable for this question.";
   const flags = $("#bankFlags");
   flags.hidden = question.flags.length === 0;
   flags.textContent = question.flags.length ? `Review flags: ${question.flags.join(" | ")}` : "";
+  const sourceList = $("#bankSources");
+  sourceList.innerHTML = "";
+  sourceList.hidden = !question.sources.length;
+  question.sources.forEach((source) => {
+    const link = document.createElement("a");
+    link.href = source.url;
+    link.target = "_blank";
+    link.rel = "noreferrer noopener";
+    link.textContent = source.title;
+    sourceList.appendChild(link);
+  });
   $("#revealBankAnswer").textContent = state.bankRevealed ? "Hide answer & explanation" : "Reveal answer & explanation";
 
   const isReviewed = reviewed.has(question.id);

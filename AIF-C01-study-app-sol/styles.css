@@ -1535,15 +1535,15 @@ main {
   width: 9px;
   height: 9px;
   margin-top: 3px;
-  background: var(--green);
+  background: var(--blue);
   border-radius: 50%;
 }
 
-.quality-dot--note {
-  background: var(--yellow);
+.quality-dot--verified {
+  background: var(--green);
 }
 
-.quality-dot--caution {
+.quality-dot--needs-review {
   background: var(--red);
 }
 
@@ -1565,23 +1565,39 @@ main {
 .quality-badge {
   max-width: 60%;
   padding: 5px 8px;
-  color: var(--green);
-  background: var(--green-soft);
-  border: 1px solid var(--green);
+  color: var(--blue);
+  background: var(--blue-soft);
+  border: 1px solid var(--blue);
   border-radius: 3px;
   text-align: right;
 }
 
-.quality-badge--note {
-  color: #76500b;
-  background: var(--yellow-soft);
-  border-color: var(--yellow);
+.quality-badge--verified {
+  color: var(--green);
+  background: var(--green-soft);
+  border-color: var(--green);
 }
 
-.quality-badge--caution {
+.quality-badge--needs-review {
   color: var(--red);
   background: var(--red-soft);
   border-color: var(--red);
+}
+
+.bank-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.bank-sources a {
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
 .bank-question > h3 {

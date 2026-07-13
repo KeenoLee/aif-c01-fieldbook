@@ -81,7 +81,7 @@
               <div><dt>Path tasks</dt><dd id="pulsePath">0 / 15</dd></div>
               <div><dt>Scenarios solved</dt><dd id="pulseScenarios">0 / 15</dd></div>
               <div><dt>Cards retained</dt><dd id="pulseCards">0 / 30</dd></div>
-              <div><dt>Bank reviewed</dt><dd id="pulseBank">0 / 385</dd></div>
+              <div><dt>Bank reviewed</dt><dd id="pulseBank">0 / 380</dd></div>
               <div><dt>Best exam</dt><dd id="pulseExam">Not taken</dd></div>
             </dl>
             <p class="evidence-note">Readiness favors demonstrated recall. Marking a topic complete helps, but correct drills count more.</p>
@@ -227,7 +227,7 @@
         <section class="bank-notice" aria-label="Question bank extraction notice">
           <div>
             <p class="label">Extraction quality</p>
-            <h3><span id="bankRecoveredTotal">385</span> questions recovered from the source PDF.</h3>
+            <h3><span id="bankRecoveredTotal">380</span> questions retained after the quality audit.</h3>
           </div>
           <p id="bankDisclaimer">This bank was recovered from a watermark-damaged PDF. Use the quality label on every question and verify caution items before memorizing them.</p>
         </section>
@@ -244,7 +244,7 @@
           <aside class="bank-index-panel" aria-labelledby="bankMatchesTitle">
             <div class="bank-index-heading">
               <h3 id="bankMatchesTitle">Questions</h3>
-              <span id="bankMatchCount">385 matches</span>
+              <span id="bankMatchCount">380 matches</span>
             </div>
             <div class="bank-list" id="bankList"></div>
             <p class="empty-state" id="bankEmpty" hidden>No questions match this search and quality filter.</p>
@@ -268,6 +268,7 @@
                 <p id="bankExplanation"></p>
               </div>
               <div class="bank-flags" id="bankFlags" hidden></div>
+              <div class="bank-sources" id="bankSources" hidden></div>
             </div>
 
             <div class="bank-question__actions">
@@ -276,7 +277,7 @@
             </div>
             <div class="bank-question__nav">
               <button class="text-button" id="previousBankQuestion" type="button">Previous</button>
-              <span id="bankPosition">1 of 385</span>
+              <span id="bankPosition">1 of 380</span>
               <button class="text-button" id="nextBankQuestion" type="button">Next</button>
             </div>
           </article>
@@ -324,6 +325,7 @@
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="test-bank-data.js"></script>
+    <script src="test-bank-review.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
