@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  299: verified(["modelCards"], {
+    prompt: "A company has developed an ML model to approve or reject loan applications. The model's decision-making process must be transparent and explainable for regulatory compliance. The company must document the model and its decision process for audit purposes. Which solution meets these requirements?"
+  }),
   266: verified(["exam"], {
     prompt: "An online media-streaming company wants to offer natural-language-based image search and filtering. The company needs a vector database that supports similarity search and nearest-neighbor queries. Which AWS service meets these requirements?"
   }),
