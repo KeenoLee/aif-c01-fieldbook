@@ -46,6 +46,15 @@
   });
 
   const corrections = {
+  18: verified(["exam"], {
+    prompt: "An AI practitioner wants to use a foundation model (FM) to design a search application. The application must handle text and image queries. Which type of FM should the AI practitioner use to power the search application?",
+    options: [
+      { label: "A", text: "Multimodal embedding model" },
+      { label: "B", text: "Text embedding model" },
+      { label: "C", text: "Multimodal generation model" },
+      { label: "D", text: "Image generation model" }
+    ]
+  }),
   16: verified(["callAnalytics"], {
     prompt: "A company is building a contact center application and wants to gain insights from customer conversations. The company wants to analyze the audio from customer calls and extract key information. Which solution meets these requirements?",
     options: [
