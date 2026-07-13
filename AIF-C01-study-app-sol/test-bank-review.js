@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  195: verified(["guardrails"], {
+    explanation: "Amazon Bedrock Guardrails can apply configurable safeguards to model inputs and outputs. A patient-facing medical application still requires broader clinical, legal, privacy, and human-oversight controls."
+  }),
   187: verified(["exam"], {
     explanation: "Fraudulent versus non-fraudulent is a two-class outcome, so binary classification is the appropriate task type."
   }),
