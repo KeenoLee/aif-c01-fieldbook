@@ -46,6 +46,14 @@
   });
 
   const corrections = {
+  58: verified(["exam"], {
+    options: [
+      { label: "A", text: "Supervised learning with a manually curated dataset of good and bad responses" },
+      { label: "B", text: "Reinforcement learning with rewards for positive customer feedback" },
+      { label: "C", text: "Unsupervised learning to find clusters of similar customer inquiries" },
+      { label: "D", text: "Supervised learning with a continuously updated FAQ database" }
+    ]
+  }),
   57: verified(["responsibleAi"], {
     prompt: "A company trained a security-camera model on a dataset that underrepresented people from a specific ethnic group. In production, the model disproportionately flags members of that group as potential thieves. Which type of bias is most directly associated with the unrepresentative training sample?",
     explanation: "Sampling bias occurs when the training data does not adequately represent the population on which the model is used."
