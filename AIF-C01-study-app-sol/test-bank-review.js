@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  131: verified(["exam"], {
+    explanation: "Amazon Bedrock provides managed access to foundation models for building and scaling generative AI applications without managing the underlying model infrastructure."
+  }),
   126: verified(["cloudTrail", "glacier"], {
     options: [
       { label: "A", text: "AWS CloudTrail" },
