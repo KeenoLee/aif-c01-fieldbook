@@ -46,6 +46,10 @@
   });
 
   const corrections = {
+  57: verified(["responsibleAi"], {
+    prompt: "A company trained a security-camera model on a dataset that underrepresented people from a specific ethnic group. In production, the model disproportionately flags members of that group as potential thieves. Which type of bias is most directly associated with the unrepresentative training sample?",
+    explanation: "Sampling bias occurs when the training data does not adequately represent the population on which the model is used."
+  }),
   50: verified(["customOnDemand"], {
     prompt: "A company uses an Amazon Bedrock base model to summarize documents. The company has trained a compatible custom model and wants to invoke it with pay-as-you-go pricing. Which action should the company take?",
     options: [
