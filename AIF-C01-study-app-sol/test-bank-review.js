@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  91: verified(["modelCards"], {
+    explanation: "Amazon SageMaker Model Cards provide standardized documentation for intended uses, training details, evaluation results, risk ratings, and other governance information, supporting model sharing and audits."
+  }),
   88: verified(["exam"], {
     prompt: "A social media company wants to use a large language model (LLM) to summarize messages. The company has chosen several LLMs that are available on Amazon SageMaker JumpStart. The company wants to compare the toxicity of the models' outputs. Which strategy lets the company evaluate the LLMs with the LEAST operational overhead?"
   }),
