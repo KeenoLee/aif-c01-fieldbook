@@ -46,6 +46,9 @@
   });
 
   const corrections = {
+  218: verified(["exam"], {
+    prompt: "A grocery store wants to create a chatbot that helps customers find products. The chatbot must check inventory in real time and provide each product's location. Which prompt engineering technique should the store use?"
+  }),
   217: verified(["responsibleAi"], {
     prompt: "A bank is fine-tuning a large language model (LLM) on Amazon Bedrock to assist customers with loan questions. The bank wants to reduce the risk that the model reveals private customer data. Which solution is the most direct preventive control?",
     explanation: "Remove personally identifiable information from training data before fine-tuning. Data minimization reduces the chance that sensitive details are learned; encryption at rest does not prevent a model from learning plaintext data during training."
