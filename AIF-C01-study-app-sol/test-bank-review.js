@@ -46,6 +46,14 @@
   });
 
   const corrections = {
+  271: verified(["inference"], {
+    options: [
+      { label: "A", text: "Retrain the model. Monitor model drift by using Amazon SageMaker Clarify" },
+      { label: "B", text: "Retrain the model. Monitor model drift by using Amazon SageMaker Model Monitor" },
+      { label: "C", text: "Build a new model. Monitor model drift by using Amazon SageMaker Feature Store" },
+      { label: "D", text: "Build a new model. Monitor model drift by using Amazon SageMaker JumpStart" }
+    ]
+  }),
   270: verified(["responsibleAi"], {
     prompt: "A financial company uses an AI model to assign credit limits to new customers. The company wants to make the model's decision-making process more transparent to customers. Which solution meets these requirements?"
   }),
