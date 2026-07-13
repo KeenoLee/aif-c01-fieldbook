@@ -46,6 +46,15 @@
   });
 
   const corrections = {
+  159: verified(["exam"], {
+    options: [
+      { label: "A", text: "A method for compressing large datasets" },
+      { label: "B", text: "An encryption method for securing sensitive data" },
+      { label: "C", text: "A method for visualizing high-dimensional data" },
+      { label: "D", text: "A numerical vector representation that captures features or semantic relationships in data" }
+    ],
+    explanation: "Embeddings represent data as numerical vectors so systems can compare semantic or feature similarity."
+  }),
   157: verified(["exam"], {
     explanation: "Summarization generates a concise version of longer text, making it a generative AI use case. The other choices are predictive or grouping tasks."
   }),
