@@ -466,6 +466,7 @@
 
   window.AIF_TEST_BANK_REVIEW = {
     auditDate: "2026-07-13",
+    reviewedAll: true,
     removed: {
       8: "Removed: SageMaker Ground Truth Plus support ended on June 30, 2026.",
       97: "Removed: the current Bedrock Stable Diffusion 3.5 interface does not expose the claimed CFG-scale control.",
