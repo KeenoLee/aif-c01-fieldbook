@@ -43,6 +43,7 @@
       <button class="nav-tab" type="button" data-view="cards">Flashcards</button>
       <button class="nav-tab" type="button" data-view="bank">Question bank</button>
       <button class="nav-tab" type="button" data-view="exam">Practice exam</button>
+      <button class="nav-tab" type="button" data-view="mock">Mock exam</button>
     </nav>
 
     <main id="mainContent" tabindex="-1">
@@ -83,6 +84,7 @@
               <div><dt>Cards retained</dt><dd id="pulseCards">0 / 30</dd></div>
               <div><dt>Bank reviewed</dt><dd id="pulseBank">0 / 380</dd></div>
               <div><dt>Best exam</dt><dd id="pulseExam">Not taken</dd></div>
+              <div><dt>Best mock</dt><dd id="pulseMock">Not taken</dd></div>
             </dl>
             <p class="evidence-note">Readiness favors demonstrated recall. Marking a topic complete helps, but correct drills count more.</p>
           </aside>
@@ -317,6 +319,63 @@
           <button class="button button--primary exam-next" id="nextExamQuestion" type="button">Next question</button>
         </section>
         <section class="results-sheet" id="resultsSheet" hidden aria-live="polite"></section>
+      </section>
+
+      <section class="view" id="mock" aria-labelledby="mockTitle" hidden>
+        <div class="page-intro page-intro--compact">
+          <div>
+            <p class="folio">65 questions / 90-minute simulation</p>
+            <h2 id="mockTitle">Rehearse under exam conditions.</h2>
+          </div>
+          <button class="button button--secondary" id="restartMock" type="button">New mock</button>
+        </div>
+
+        <section class="exam-start mock-start" id="mockStart">
+          <div>
+            <p class="label">Timed mock exam</p>
+            <h3>A fresh, blueprint-weighted set from the reviewed question bank.</h3>
+            <p>Answers and explanations stay hidden until you submit. The timer continues if you move to another study section.</p>
+          </div>
+          <dl class="exam-mix" id="mockMix"></dl>
+          <button class="button button--primary" id="startMock" type="button">Start 90-minute mock</button>
+        </section>
+
+        <section class="mock-workspace" id="mockWorkspace" hidden>
+          <div class="mock-status-bar">
+            <div class="mock-clock">
+              <span>Time left</span>
+              <strong id="mockTimer" role="timer" aria-live="off">1:30:00</strong>
+            </div>
+            <div class="mock-status-copy">
+              <strong id="mockPosition">Question 1 of 65</strong>
+              <span id="mockAnswered">0 answered · 65 remaining</span>
+            </div>
+            <button class="button button--danger" id="submitMock" type="button">Submit mock</button>
+          </div>
+
+          <div class="mock-layout">
+            <aside class="mock-navigator" aria-labelledby="mockNavigatorTitle">
+              <div class="mock-navigator__heading">
+                <h3 id="mockNavigatorTitle">Question map</h3>
+                <span><i></i> Answered</span>
+              </div>
+              <div class="mock-question-grid" id="mockQuestionGrid"></div>
+            </aside>
+
+            <section class="exam-sheet mock-question-sheet" aria-labelledby="mockQuestion">
+              <p class="exam-domain" id="mockDomain"></p>
+              <h3 id="mockQuestion"></h3>
+              <p class="mock-selection-hint" id="mockSelectionHint"></p>
+              <div class="answer-grid answer-grid--exam mock-answers" id="mockAnswers"></div>
+              <div class="mock-question-actions">
+                <button class="button button--secondary" id="previousMockQuestion" type="button">Previous</button>
+                <button class="button button--primary" id="nextMockQuestion" type="button">Next question</button>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section class="results-sheet" id="mockResults" hidden aria-live="polite"></section>
       </section>
     </main>
 

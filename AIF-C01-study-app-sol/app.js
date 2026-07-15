@@ -253,6 +253,43 @@ const quizQuestions = [
   ["d5", "Which statement best describes AWS shared responsibility?", ["AWS owns all customer data decisions", "Customers secure AWS data centers", "AWS secures the cloud; customers secure what they build and configure in it", "Customers have no AI security duties"], 2, "AWS is responsible for security of the cloud; customers are responsible for security in the cloud."]
 ].map(([domain, question, answers, correct, explanation], index) => ({ id: `q${index + 1}`, domain, question, answers, correct, explanation }));
 
+const MOCK_EXAM_TOTAL = 65;
+const MOCK_EXAM_SECONDS = 90 * 60;
+
+const mockDomainSignals = {
+  d1: [
+    [10, /supervised|unsupervised|reinforcement learning|classification|regression|clustering|forecasting/],
+    [8, /precision|recall|f1(?: score)?|confusion matrix|true positive|false positive|mean squared|root mean/],
+    [7, /training data|test data|validation data|model training|inference|machine learning lifecycle|ml lifecycle|feature engineering/],
+    [5, /structured data|unstructured data|labeled data|unlabeled data|deep learning|neural network|decision tree/]
+  ],
+  d2: [
+    [10, /foundation model|large language model|\bllm|generative ai|genai|transformer|diffusion model|multimodal/],
+    [9, /tokenization|\btokens?\b|context window|embedding|vector representation|semantic meaning/],
+    [7, /hallucination|nondetermin|pretrained model|agentic ai|ai agent/],
+    [5, /natural language processing|computer vision|foundation-model lifecycle/]
+  ],
+  d3: [
+    [12, /retrieval.augmented|\brag\b|knowledge base|fine-tun|continued pretrain|distillation/],
+    [10, /prompt engineering|prompt template|zero-shot|one-shot|few-shot|chain.of.thought|temperature|top.p|top.k/],
+    [9, /model evaluation|rouge|bleu|bertscore|human evaluation|model selection|benchmark/],
+    [7, /vector database|semantic search|chunking|grounding|bedrock agents?|prompt management/],
+    [5, /amazon bedrock|foundation model application|fm application/]
+  ],
+  d4: [
+    [13, /bias|fairness|responsible ai|sagemaker clarify|explainab|interpretab|transparen/],
+    [10, /human.in.the.loop|human review|augmented ai|amazon a2i|model cards?|overfitting|underfitting/],
+    [8, /toxic|toxicity|harmful content|legal risk|ethical|subgroup|inclusive/],
+    [6, /robustness|accountability|deterministic/]
+  ],
+  d5: [
+    [13, /\biam\b|identity and access|least privilege|\bkms\b|cloudtrail|cloudwatch|amazon macie|aws config|audit manager|aws artifact|privatelink/],
+    [11, /security|compliance|governance|encryption|data privacy|data residency|data lineage|data retention/],
+    [10, /prompt injection|jailbreak|personally identifiable|\bpii\b|sensitive data|access control|shared responsibility/],
+    [8, /guardrails?|content filter|vpc endpoint|network isolation|audit trail/]
+  ]
+};
+
 const rawTestBankPayload = window.AIF_TEST_BANK || {
   meta: { total: 0, answers: 0, explanations: 0, reviewed: 0, note: 0, caution: 0, claimedTotal: 385, disclaimer: "Question bank data is unavailable." },
   questions: []
@@ -307,6 +344,59 @@ const testBankPayload = {
 };
 const testBankQuestions = testBankPayload.questions;
 
+function inferMockDomain(question) {
+  const text = `${question.prompt || ""} ${question.answerText || ""}`.toLowerCase();
+  let selectedDomain = null;
+  let selectedScore = 0;
+
+  domains.forEach((domain) => {
+    const score = mockDomainSignals[domain.id].reduce((total, [weight, pattern]) => total + (pattern.test(text) ? weight : 0), 0);
+    if (score > selectedScore) {
+      selectedDomain = domain.id;
+      selectedScore = score;
+    }
+  });
+
+  return selectedDomain;
+}
+
+function allocateMockQuestions(total) {
+  const allocation = domains.map((domain, index) => {
+    const exact = total * domain.weight / 100;
+    return { domain: domain.id, count: Math.floor(exact), fraction: exact % 1, index };
+  });
+  let remaining = total - allocation.reduce((sum, item) => sum + item.count, 0);
+
+  [...allocation]
+    .sort((a, b) => b.fraction - a.fraction || a.index - b.index)
+    .forEach((item) => {
+      if (remaining <= 0) return;
+      allocation.find((entry) => entry.domain === item.domain).count += 1;
+      remaining -= 1;
+    });
+
+  return allocation;
+}
+
+function shuffleItems(items) {
+  const copy = [...items];
+  for (let index = copy.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
+  }
+  return copy;
+}
+
+const mockBlueprint = allocateMockQuestions(MOCK_EXAM_TOTAL);
+const mockQuestionPool = testBankQuestions
+  .filter((question) => (
+    question.options.length >= 2
+    && question.answers.length >= 1
+    && question.answers.every((answer) => question.options.some((option) => option.label === answer))
+  ))
+  .map((question) => ({ ...question, domain: inferMockDomain(question) }))
+  .filter((question) => question.domain);
+
 const defaultProgress = () => ({
   pathDone: [],
   scenarioAnswers: {},
@@ -314,6 +404,8 @@ const defaultProgress = () => ({
   bankReviewed: [],
   bestExam: null,
   examAttempts: 0,
+  bestMock: null,
+  mockAttempts: 0,
   quickDone: false
 });
 
@@ -350,6 +442,14 @@ const state = {
     score: 0,
     answers: [],
     answered: false
+  },
+  mock: {
+    running: false,
+    questions: [],
+    index: 0,
+    selections: {},
+    deadline: null,
+    timerId: null
   }
 };
 
@@ -419,6 +519,7 @@ function renderToday() {
   $("#pulseCards").textContent = `${retained} / ${flashcards.length}`;
   $("#pulseBank").textContent = `${state.progress.bankReviewed.length} / ${testBankPayload.meta.total}`;
   $("#pulseExam").textContent = state.progress.bestExam ? `${state.progress.bestExam.percent}%` : "Not taken";
+  $("#pulseMock").textContent = state.progress.bestMock ? `${state.progress.bestMock.percent}%` : "Not taken";
 
   let recommendation;
   if (state.progress.pathDone.length < 5) {
@@ -1031,6 +1132,257 @@ function resetExamView() {
   $("#resultsSheet").hidden = true;
 }
 
+function escapeHTML(value) {
+  return String(value || "").replace(/[&<>"']/g, (character) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "\"": "&quot;",
+    "'": "&#39;"
+  })[character]);
+}
+
+function renderMockMix() {
+  $("#mockMix").innerHTML = mockBlueprint.map((item) => {
+    const domain = domainById(item.domain);
+    return `<div><dt>${domain.short} · ${domain.weight}%</dt><dd>${item.count} Q</dd></div>`;
+  }).join("");
+}
+
+function buildMockExamQuestions() {
+  const selected = [];
+  for (const item of mockBlueprint) {
+    const candidates = mockQuestionPool.filter((question) => question.domain === item.domain);
+    if (candidates.length < item.count) return [];
+    selected.push(...shuffleItems(candidates).slice(0, item.count));
+  }
+  return shuffleItems(selected);
+}
+
+function mockSecondsRemaining() {
+  if (!state.mock.deadline) return MOCK_EXAM_SECONDS;
+  return Math.max(0, Math.ceil((state.mock.deadline - Date.now()) / 1000));
+}
+
+function formatMockTime(totalSeconds) {
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor(totalSeconds % 3600 / 60);
+  const seconds = totalSeconds % 60;
+  return `${hours}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+}
+
+function updateMockTimer() {
+  if (!state.mock.running) return;
+  const remaining = mockSecondsRemaining();
+  const timer = $("#mockTimer");
+  timer.textContent = formatMockTime(remaining);
+  timer.classList.toggle("is-urgent", remaining <= 300);
+  if (remaining === 0) finishMockExam(true);
+}
+
+function startMockTimer() {
+  clearInterval(state.mock.timerId);
+  updateMockTimer();
+  state.mock.timerId = window.setInterval(updateMockTimer, 1000);
+}
+
+function startMockExam() {
+  const questions = buildMockExamQuestions();
+  if (questions.length !== MOCK_EXAM_TOTAL) {
+    showToast("The reviewed bank does not contain enough domain-tagged questions for this mock.");
+    return;
+  }
+
+  clearInterval(state.mock.timerId);
+  state.mock = {
+    running: true,
+    questions,
+    index: 0,
+    selections: {},
+    deadline: Date.now() + MOCK_EXAM_SECONDS * 1000,
+    timerId: null
+  };
+  $("#mockStart").hidden = true;
+  $("#mockResults").hidden = true;
+  $("#mockWorkspace").hidden = false;
+  startMockTimer();
+  renderMockQuestion();
+}
+
+function mockQuestionIsComplete(question) {
+  return (state.mock.selections[question.id] || []).length === question.answers.length;
+}
+
+function renderMockNavigator() {
+  const grid = $("#mockQuestionGrid");
+  grid.innerHTML = state.mock.questions.map((question, index) => {
+    const current = index === state.mock.index;
+    const complete = mockQuestionIsComplete(question);
+    return `<button class="mock-question-number${current ? " is-current" : ""}${complete ? " is-answered" : ""}" type="button" data-mock-index="${index}" data-mock-domain="${question.domain}" aria-label="Question ${index + 1}${complete ? ", answered" : ", unanswered"}"${current ? " aria-current=\"step\"" : ""}>${index + 1}</button>`;
+  }).join("");
+}
+
+function renderMockQuestion() {
+  if (!state.mock.running) return;
+  const question = state.mock.questions[state.mock.index];
+  const domain = domainById(question.domain);
+  const selected = state.mock.selections[question.id] || [];
+  const complete = state.mock.questions.filter(mockQuestionIsComplete).length;
+
+  $("#mockPosition").textContent = `Question ${state.mock.index + 1} of ${state.mock.questions.length}`;
+  $("#mockAnswered").textContent = `${complete} answered · ${state.mock.questions.length - complete} remaining`;
+  $("#mockDomain").textContent = `${domain.short} / ${domain.name} · Bank Q${question.number}`;
+  $("#mockQuestion").textContent = question.prompt;
+  $("#mockSelectionHint").textContent = question.answers.length > 1
+    ? `Select ${question.answers.length} answers. Your choices are not scored until submission.`
+    : "Select one answer. Your choice is not scored until submission.";
+
+  const answerContainer = $("#mockAnswers");
+  answerContainer.innerHTML = "";
+  question.options.forEach((option) => {
+    const button = document.createElement("button");
+    button.className = `answer-button${selected.includes(option.label) ? " is-selected" : ""}`;
+    button.type = "button";
+    button.dataset.mockAnswer = option.label;
+    button.setAttribute("aria-pressed", String(selected.includes(option.label)));
+
+    const marker = document.createElement("span");
+    marker.className = "answer-marker";
+    marker.textContent = option.label;
+    const text = document.createElement("span");
+    text.textContent = option.text;
+    button.append(marker, text);
+    answerContainer.append(button);
+  });
+
+  $("#previousMockQuestion").disabled = state.mock.index === 0;
+  $("#nextMockQuestion").textContent = state.mock.index === state.mock.questions.length - 1 ? "Submit mock exam" : "Next question";
+  renderMockNavigator();
+}
+
+function selectMockAnswer(label) {
+  if (!state.mock.running) return;
+  const question = state.mock.questions[state.mock.index];
+  const selected = [...(state.mock.selections[question.id] || [])];
+
+  if (question.answers.length === 1) {
+    state.mock.selections[question.id] = [label];
+  } else if (selected.includes(label)) {
+    state.mock.selections[question.id] = selected.filter((item) => item !== label);
+  } else if (selected.length < question.answers.length) {
+    state.mock.selections[question.id] = [...selected, label];
+  } else {
+    showToast(`Select no more than ${question.answers.length} answers.`);
+    return;
+  }
+
+  renderMockQuestion();
+}
+
+function moveMockQuestion(offset) {
+  if (!state.mock.running) return;
+  if (offset > 0 && state.mock.index === state.mock.questions.length - 1) {
+    submitMockExam();
+    return;
+  }
+  state.mock.index = Math.max(0, Math.min(state.mock.questions.length - 1, state.mock.index + offset));
+  renderMockQuestion();
+  $("#mockAnswers .answer-button")?.focus();
+}
+
+function mockQuestionIsCorrect(question) {
+  const selected = [...(state.mock.selections[question.id] || [])].sort();
+  const correct = [...question.answers].sort();
+  return selected.length === correct.length && selected.every((answer, index) => answer === correct[index]);
+}
+
+function submitMockExam() {
+  if (!state.mock.running) return;
+  const unanswered = state.mock.questions.filter((question) => !mockQuestionIsComplete(question)).length;
+  const detail = unanswered ? ` ${unanswered} questions are incomplete.` : "";
+  if (!window.confirm(`Submit this mock exam?${detail}`)) return;
+  finishMockExam(false);
+}
+
+function finishMockExam(timedOut) {
+  if (!state.mock.running) return;
+  clearInterval(state.mock.timerId);
+  const correct = state.mock.questions.filter(mockQuestionIsCorrect).length;
+  const percent = Math.round(correct / state.mock.questions.length * 100);
+  const byDomain = {};
+
+  domains.forEach((domain) => {
+    const questions = state.mock.questions.filter((question) => question.domain === domain.id);
+    byDomain[domain.id] = {
+      correct: questions.filter(mockQuestionIsCorrect).length,
+      total: questions.length
+    };
+  });
+
+  state.progress.mockAttempts += 1;
+  if (!state.progress.bestMock || percent > state.progress.bestMock.percent) {
+    state.progress.bestMock = { percent, score: correct, byDomain };
+  }
+  saveProgress();
+  state.mock.running = false;
+  $("#mockWorkspace").hidden = true;
+  renderMockResults({ correct, percent, byDomain, timedOut });
+  renderToday();
+  if (timedOut) showToast("Time expired. Your completed answers were submitted.");
+}
+
+function renderMockResults({ correct, percent, byDomain, timedOut }) {
+  const unanswered = state.mock.questions.filter((question) => !mockQuestionIsComplete(question)).length;
+  const misses = state.mock.questions.filter((question) => !mockQuestionIsCorrect(question));
+  const weakest = domains.reduce((weak, domain) => {
+    const ratio = byDomain[domain.id].correct / byDomain[domain.id].total;
+    const weakRatio = byDomain[weak.id].correct / byDomain[weak.id].total;
+    return ratio < weakRatio ? domain : weak;
+  }, domains[0]);
+  const sheet = $("#mockResults");
+  sheet.hidden = false;
+  sheet.innerHTML = `
+    <div class="result-hero">
+      <div class="result-score">${percent}%</div>
+      <div>
+        <p class="label">${timedOut ? "Time expired" : "Mock submitted"}</p>
+        <h3>${correct} of ${state.mock.questions.length} correct</h3>
+        <p>${unanswered ? `${unanswered} incomplete ${unanswered === 1 ? "question was" : "questions were"} scored as incorrect. ` : ""}This raw percentage is diagnostic and is not an AWS scaled score.</p>
+        <p><strong>Next focus:</strong> ${escapeHTML(weakest.name)}</p>
+      </div>
+    </div>
+    <div class="domain-results">${domains.map((domain) => `<div class="domain-result" style="--domain-color:${domain.color}"><strong>${byDomain[domain.id].correct}/${byDomain[domain.id].total}</strong><span>${domain.name}</span></div>`).join("")}</div>
+    <div class="review-list">
+      <h4>${misses.length ? `Review ${misses.length} missed or incomplete decisions` : "No misses in this attempt"}</h4>
+      ${misses.map((question) => {
+        const selected = state.mock.selections[question.id] || [];
+        const selectedText = question.options.filter((option) => selected.includes(option.label)).map((option) => `${option.label}. ${option.text}`).join("; ") || "No complete answer";
+        const correctText = question.options.filter((option) => question.answers.includes(option.label)).map((option) => `${option.label}. ${option.text}`).join("; ");
+        return `<div class="review-row"><strong>Bank Q${question.number}: ${escapeHTML(question.prompt)}</strong><p><b>Your answer:</b> ${escapeHTML(selectedText)}<br><b>Correct answer:</b> ${escapeHTML(correctText)}<br>${escapeHTML(question.explanation || "No explanation is available.")}</p></div>`;
+      }).join("")}
+    </div>
+    <button class="button button--primary" type="button" id="mockResultsRestart">Take another mock</button>`;
+  $("#mockResultsRestart").addEventListener("click", startMockExam);
+}
+
+function resetMockView(force = false) {
+  if (state.mock.running && !force && !window.confirm("End this mock exam and discard the current answers?")) return;
+  clearInterval(state.mock.timerId);
+  state.mock = {
+    running: false,
+    questions: [],
+    index: 0,
+    selections: {},
+    deadline: null,
+    timerId: null
+  };
+  $("#mockStart").hidden = false;
+  $("#mockWorkspace").hidden = true;
+  $("#mockResults").hidden = true;
+  $("#mockTimer").textContent = formatMockTime(MOCK_EXAM_SECONDS);
+  $("#mockTimer").classList.remove("is-urgent");
+}
+
 function bindEvents() {
   $$(".nav-tab").forEach((button) => button.addEventListener("click", () => switchView(button.dataset.view)));
   document.addEventListener("click", (event) => {
@@ -1070,6 +1422,7 @@ function bindEvents() {
     resetBankAnswerState();
     renderAll();
     resetExamView();
+    resetMockView(true);
     showToast("Progress reset.");
   });
 
@@ -1199,12 +1552,33 @@ function bindEvents() {
   });
   $("#nextExamQuestion").addEventListener("click", nextExamQuestion);
 
+  $("#startMock").addEventListener("click", startMockExam);
+  $("#restartMock").addEventListener("click", () => resetMockView(false));
+  $("#submitMock").addEventListener("click", submitMockExam);
+  $("#mockAnswers").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-mock-answer]");
+    if (button) selectMockAnswer(button.dataset.mockAnswer);
+  });
+  $("#mockQuestionGrid").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-mock-index]");
+    if (!button || !state.mock.running) return;
+    state.mock.index = Number(button.dataset.mockIndex);
+    renderMockQuestion();
+  });
+  $("#previousMockQuestion").addEventListener("click", () => moveMockQuestion(-1));
+  $("#nextMockQuestion").addEventListener("click", () => moveMockQuestion(1));
+
   document.addEventListener("keydown", (event) => {
     const activeView = $(".view.is-active");
     if (!activeView || /INPUT|TEXTAREA|SELECT/.test(event.target.tagName)) return;
     if (activeView.id === "bank") {
       if (event.key === "ArrowLeft") moveBankQuestion(-1);
       else if (event.key === "ArrowRight") moveBankQuestion(1);
+      return;
+    }
+    if (activeView.id === "mock" && state.mock.running) {
+      if (event.key === "ArrowLeft") moveMockQuestion(-1);
+      else if (event.key === "ArrowRight") moveMockQuestion(1);
       return;
     }
     if (activeView.id !== "cards") return;
@@ -1236,6 +1610,7 @@ function renderAll() {
   renderCard();
   renderBank();
   renderExamMix();
+  renderMockMix();
   restoreQuickCheck();
   updateReadiness();
 }
