@@ -292,28 +292,29 @@
       <section class="view" id="exam" aria-labelledby="examTitle" hidden>
         <div class="page-intro page-intro--compact">
           <div>
-            <p class="folio">25 questions / blueprint-weighted</p>
+            <p class="folio">65 questions / blueprint-weighted</p>
             <h2 id="examTitle">Practice the decision, not the key.</h2>
           </div>
           <button class="button button--secondary" id="restartExam" type="button">New attempt</button>
         </div>
         <section class="exam-start" id="examStart">
           <div>
-            <p class="label">Curated practice set</p>
-            <h3>One question at a time. Explanations after every answer.</h3>
-            <p>The mix follows the five domain weights. Questions are derived from the current study guide and vetted practice set, not copied from flagged test-bank answers.</p>
+            <p class="label">Guided practice</p>
+            <h3>A fresh exam-sized set. Feedback after every answer.</h3>
+            <p>The mix follows the five domain weights and draws from the reviewed question bank plus the curated practice set. There is no timer, and every answer is checked immediately.</p>
           </div>
           <dl class="exam-mix" id="examMix"></dl>
-          <button class="button button--primary" id="startExam" type="button">Start 25-question exam</button>
+          <button class="button button--primary" id="startExam" type="button">Start 65-question practice</button>
         </section>
         <section class="exam-sheet" id="examSheet" hidden aria-live="polite">
           <div class="exam-progress-row">
-            <span id="examPosition">Question 1 of 25</span>
+            <span id="examPosition">Question 1 of 65</span>
             <span id="examScore">0 correct</span>
           </div>
           <div class="exam-progress" aria-hidden="true"><span id="examProgressBar"></span></div>
           <p class="exam-domain" id="examDomain"></p>
           <h3 id="examQuestion"></h3>
+          <p class="mock-selection-hint" id="examSelectionHint"></p>
           <div class="answer-grid answer-grid--exam" id="examAnswers"></div>
           <div class="rationale" id="examRationale" hidden></div>
           <button class="button button--primary exam-next" id="nextExamQuestion" type="button">Next question</button>

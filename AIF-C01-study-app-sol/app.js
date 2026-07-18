@@ -253,10 +253,10 @@ const quizQuestions = [
   ["d5", "Which statement best describes AWS shared responsibility?", ["AWS owns all customer data decisions", "Customers secure AWS data centers", "AWS secures the cloud; customers secure what they build and configure in it", "Customers have no AI security duties"], 2, "AWS is responsible for security of the cloud; customers are responsible for security in the cloud."]
 ].map(([domain, question, answers, correct, explanation], index) => ({ id: `q${index + 1}`, domain, question, answers, correct, explanation }));
 
-const MOCK_EXAM_TOTAL = 65;
+const EXAM_QUESTION_TOTAL = 65;
 const MOCK_EXAM_SECONDS = 90 * 60;
 
-const mockDomainSignals = {
+const questionDomainSignals = {
   d1: [
     [10, /supervised|unsupervised|reinforcement learning|classification|regression|clustering|forecasting/],
     [8, /precision|recall|f1(?: score)?|confusion matrix|true positive|false positive|mean squared|root mean/],
@@ -344,13 +344,13 @@ const testBankPayload = {
 };
 const testBankQuestions = testBankPayload.questions;
 
-function inferMockDomain(question) {
+function inferQuestionDomain(question) {
   const text = `${question.prompt || ""} ${question.answerText || ""}`.toLowerCase();
   let selectedDomain = null;
   let selectedScore = 0;
 
   domains.forEach((domain) => {
-    const score = mockDomainSignals[domain.id].reduce((total, [weight, pattern]) => total + (pattern.test(text) ? weight : 0), 0);
+    const score = questionDomainSignals[domain.id].reduce((total, [weight, pattern]) => total + (pattern.test(text) ? weight : 0), 0);
     if (score > selectedScore) {
       selectedDomain = domain.id;
       selectedScore = score;
@@ -360,7 +360,7 @@ function inferMockDomain(question) {
   return selectedDomain;
 }
 
-function allocateMockQuestions(total) {
+function allocateExamQuestions(total) {
   const allocation = domains.map((domain, index) => {
     const exact = total * domain.weight / 100;
     return { domain: domain.id, count: Math.floor(exact), fraction: exact % 1, index };
@@ -387,15 +387,26 @@ function shuffleItems(items) {
   return copy;
 }
 
-const mockBlueprint = allocateMockQuestions(MOCK_EXAM_TOTAL);
-const mockQuestionPool = testBankQuestions
+const examBlueprint = allocateExamQuestions(EXAM_QUESTION_TOTAL);
+const reviewedExamQuestionPool = testBankQuestions
   .filter((question) => (
     question.options.length >= 2
     && question.answers.length >= 1
     && question.answers.every((answer) => question.options.some((option) => option.label === answer))
   ))
-  .map((question) => ({ ...question, domain: inferMockDomain(question) }))
+  .map((question) => ({ ...question, domain: inferQuestionDomain(question) }))
   .filter((question) => question.domain);
+const curatedPracticePool = quizQuestions.map((question) => ({
+  id: `practice-${question.id}`,
+  number: null,
+  domain: question.domain,
+  prompt: question.question,
+  options: question.answers.map((text, index) => ({ label: String.fromCharCode(65 + index), text })),
+  answers: [String.fromCharCode(65 + question.correct)],
+  answerText: question.answers[question.correct],
+  explanation: question.explanation
+}));
+const practiceQuestionPool = [...reviewedExamQuestionPool, ...curatedPracticePool];
 
 const defaultProgress = () => ({
   pathDone: [],
@@ -438,10 +449,12 @@ const state = {
   bankSubmitted: false,
   exam: {
     running: false,
+    questions: [],
     index: 0,
     score: 0,
     answers: [],
-    answered: false
+    answered: false,
+    selection: []
   },
   mock: {
     running: false,
@@ -1024,14 +1037,19 @@ function toggleBankReviewed() {
 }
 
 function renderExamMix() {
-  $("#examMix").innerHTML = domains.map((domain) => {
-    const count = quizQuestions.filter((question) => question.domain === domain.id).length;
-    return `<div><dt>${domain.short}</dt><dd>${count} Q</dd></div>`;
+  $("#examMix").innerHTML = examBlueprint.map((item) => {
+    const domain = domainById(item.domain);
+    return `<div><dt>${domain.short} · ${domain.weight}%</dt><dd>${item.count} Q</dd></div>`;
   }).join("");
 }
 
 function startExam() {
-  state.exam = { running: true, index: 0, score: 0, answers: [], answered: false };
+  const questions = buildWeightedQuestionSet(practiceQuestionPool);
+  if (questions.length !== EXAM_QUESTION_TOTAL) {
+    showToast("The reviewed bank does not contain enough questions for this practice attempt.");
+    return;
+  }
+  state.exam = { running: true, questions, index: 0, score: 0, answers: [], answered: false, selection: [] };
   $("#examStart").hidden = true;
   $("#resultsSheet").hidden = true;
   $("#examSheet").hidden = false;
@@ -1039,46 +1057,91 @@ function startExam() {
 }
 
 function renderExamQuestion() {
-  const item = quizQuestions[state.exam.index];
+  const item = state.exam.questions[state.exam.index];
   const domain = domainById(item.domain);
-  $("#examPosition").textContent = `Question ${state.exam.index + 1} of ${quizQuestions.length}`;
+  $("#examPosition").textContent = `Question ${state.exam.index + 1} of ${state.exam.questions.length}`;
   $("#examScore").textContent = `${state.exam.score} correct`;
-  $("#examProgressBar").style.width = `${state.exam.index / quizQuestions.length * 100}%`;
-  $("#examDomain").textContent = `${domain.short} / ${domain.name}`;
-  $("#examQuestion").textContent = item.question;
-  $("#examAnswers").innerHTML = item.answers.map((answer, index) => `<button class="answer-button" type="button" data-exam-answer="${index}"><span class="answer-marker">${String.fromCharCode(65 + index)}</span><span>${answer}</span></button>`).join("");
+  $("#examProgressBar").style.width = `${state.exam.index / state.exam.questions.length * 100}%`;
+  $("#examDomain").textContent = `${domain.short} / ${domain.name}${item.number ? ` · Bank Q${item.number}` : " · Curated"}`;
+  $("#examQuestion").textContent = item.prompt;
+  $("#examSelectionHint").textContent = item.answers.length > 1
+    ? `Select ${item.answers.length} answers. Feedback appears after your final choice.`
+    : "Select one answer for immediate feedback.";
   $("#examRationale").hidden = true;
   $("#examRationale").innerHTML = "";
   $("#nextExamQuestion").hidden = true;
   state.exam.answered = false;
-  $(".answer-button", $("#examAnswers"))?.focus();
+  state.exam.selection = [];
+  renderExamAnswerOptions();
+  $("#examAnswers .answer-button")?.focus();
 }
 
-function selectExamAnswer(index) {
-  if (state.exam.answered) return;
-  state.exam.answered = true;
-  const item = quizQuestions[state.exam.index];
-  const correct = index === item.correct;
-  if (correct) state.exam.score += 1;
-  state.exam.answers.push({ questionId: item.id, domain: item.domain, selected: index, correct });
-  $$(".answer-button", $("#examAnswers")).forEach((button, buttonIndex) => {
-    button.disabled = true;
-    if (buttonIndex === item.correct) button.classList.add("is-correct");
-    if (buttonIndex === index && !correct) button.classList.add("is-wrong");
+function renderExamAnswerOptions() {
+  const item = state.exam.questions[state.exam.index];
+  const container = $("#examAnswers");
+  container.innerHTML = "";
+  item.options.forEach((option) => {
+    const selected = state.exam.selection.includes(option.label);
+    const button = document.createElement("button");
+    button.className = "answer-button";
+    button.type = "button";
+    button.dataset.examAnswer = option.label;
+    button.setAttribute("aria-pressed", String(selected));
+    if (!state.exam.answered && selected) button.classList.add("is-selected");
+    if (state.exam.answered && item.answers.includes(option.label)) button.classList.add("is-correct");
+    if (state.exam.answered && selected && !item.answers.includes(option.label)) button.classList.add("is-wrong");
+    button.disabled = state.exam.answered;
+
+    const marker = document.createElement("span");
+    marker.className = "answer-marker";
+    marker.textContent = option.label;
+    const text = document.createElement("span");
+    text.textContent = option.text;
+    button.append(marker, text);
+    container.append(button);
   });
+}
+
+function selectExamAnswer(label) {
+  if (state.exam.answered) return;
+  const item = state.exam.questions[state.exam.index];
+  if (item.answers.length === 1) {
+    state.exam.selection = [label];
+    gradeExamAnswer();
+    return;
+  }
+
+  if (state.exam.selection.includes(label)) {
+    state.exam.selection = state.exam.selection.filter((answer) => answer !== label);
+  } else {
+    state.exam.selection = [...state.exam.selection, label];
+  }
+  renderExamAnswerOptions();
+  if (state.exam.selection.length === item.answers.length) gradeExamAnswer();
+}
+
+function gradeExamAnswer() {
+  if (state.exam.answered) return;
+  const item = state.exam.questions[state.exam.index];
+  const correct = sameBankAnswers(state.exam.selection, item.answers);
+  state.exam.answered = true;
+  if (correct) state.exam.score += 1;
+  state.exam.answers.push({ questionId: item.id, domain: item.domain, selected: [...state.exam.selection], correct });
+  renderExamAnswerOptions();
   $("#examScore").textContent = `${state.exam.score} correct`;
+  $("#examProgressBar").style.width = `${(state.exam.index + 1) / state.exam.questions.length * 100}%`;
   const rationale = $("#examRationale");
   rationale.hidden = false;
   rationale.classList.toggle("is-wrong", !correct);
-  rationale.innerHTML = `<strong>${correct ? "Correct." : `The better answer is ${String.fromCharCode(65 + item.correct)}.`}</strong><p>${item.explanation}</p>`;
+  rationale.innerHTML = `<strong>${correct ? "Correct." : `Review this one. The correct ${item.answers.length === 1 ? "answer is" : "answers are"} ${escapeHTML(item.answers.join(" and "))}.`}</strong><p>${escapeHTML(item.explanation || "No explanation is available.")}</p>`;
   $("#nextExamQuestion").hidden = false;
-  $("#nextExamQuestion").textContent = state.exam.index === quizQuestions.length - 1 ? "See results" : "Next question";
+  $("#nextExamQuestion").textContent = state.exam.index === state.exam.questions.length - 1 ? "See results" : "Next question";
   $("#nextExamQuestion").focus();
 }
 
 function nextExamQuestion() {
   if (!state.exam.answered) return;
-  if (state.exam.index < quizQuestions.length - 1) {
+  if (state.exam.index < state.exam.questions.length - 1) {
     state.exam.index += 1;
     renderExamQuestion();
   } else {
@@ -1087,7 +1150,7 @@ function nextExamQuestion() {
 }
 
 function finishExam() {
-  const percent = Math.round(state.exam.score / quizQuestions.length * 100);
+  const percent = Math.round(state.exam.score / state.exam.questions.length * 100);
   const byDomain = {};
   domains.forEach((domain) => {
     const answers = state.exam.answers.filter((answer) => answer.domain === domain.id);
@@ -1115,18 +1178,20 @@ function renderResults(percent, byDomain) {
   const sheet = $("#resultsSheet");
   sheet.hidden = false;
   sheet.innerHTML = `
-    <div class="result-hero"><div class="result-score">${percent}%</div><div><p class="label">Attempt complete</p><h3>${state.exam.score} of ${quizQuestions.length} correct</h3><p>${resultMessage}</p><p><strong>Next focus:</strong> ${weakest.name}</p></div></div>
+    <div class="result-hero"><div class="result-score">${percent}%</div><div><p class="label">Attempt complete</p><h3>${state.exam.score} of ${state.exam.questions.length} correct</h3><p>${resultMessage}</p><p><strong>Next focus:</strong> ${weakest.name}</p></div></div>
     <div class="domain-results">${domains.map((domain) => `<div class="domain-result" style="--domain-color:${domain.color}"><strong>${byDomain[domain.id].correct}/${byDomain[domain.id].total}</strong><span>${domain.name}</span></div>`).join("")}</div>
     <div class="review-list"><h4>${misses.length ? "Repair these decisions" : "No misses in this attempt"}</h4>${misses.map((miss) => {
-      const question = quizQuestions.find((item) => item.id === miss.questionId);
-      return `<div class="review-row"><strong>${question.question}</strong><p>You chose ${question.answers[miss.selected]}. ${question.explanation}</p></div>`;
+      const question = state.exam.questions.find((item) => item.id === miss.questionId);
+      const selectedText = question.options.filter((option) => miss.selected.includes(option.label)).map((option) => option.text).join("; ");
+      const correctText = question.options.filter((option) => question.answers.includes(option.label)).map((option) => option.text).join("; ");
+      return `<div class="review-row"><strong>${escapeHTML(question.prompt)}</strong><p><b>Your answer:</b> ${escapeHTML(selectedText)}<br><b>Correct answer:</b> ${escapeHTML(correctText)}<br>${escapeHTML(question.explanation || "No explanation is available.")}</p></div>`;
     }).join("")}</div>
     <button class="button button--primary" type="button" id="resultsRestart">Take another attempt</button>`;
   $("#resultsRestart").addEventListener("click", startExam);
 }
 
 function resetExamView() {
-  state.exam = { running: false, index: 0, score: 0, answers: [], answered: false };
+  state.exam = { running: false, questions: [], index: 0, score: 0, answers: [], answered: false, selection: [] };
   $("#examStart").hidden = false;
   $("#examSheet").hidden = true;
   $("#resultsSheet").hidden = true;
@@ -1143,16 +1208,16 @@ function escapeHTML(value) {
 }
 
 function renderMockMix() {
-  $("#mockMix").innerHTML = mockBlueprint.map((item) => {
+  $("#mockMix").innerHTML = examBlueprint.map((item) => {
     const domain = domainById(item.domain);
     return `<div><dt>${domain.short} · ${domain.weight}%</dt><dd>${item.count} Q</dd></div>`;
   }).join("");
 }
 
-function buildMockExamQuestions() {
+function buildWeightedQuestionSet(questionPool = reviewedExamQuestionPool) {
   const selected = [];
-  for (const item of mockBlueprint) {
-    const candidates = mockQuestionPool.filter((question) => question.domain === item.domain);
+  for (const item of examBlueprint) {
+    const candidates = questionPool.filter((question) => question.domain === item.domain);
     if (candidates.length < item.count) return [];
     selected.push(...shuffleItems(candidates).slice(0, item.count));
   }
@@ -1187,8 +1252,8 @@ function startMockTimer() {
 }
 
 function startMockExam() {
-  const questions = buildMockExamQuestions();
-  if (questions.length !== MOCK_EXAM_TOTAL) {
+  const questions = buildWeightedQuestionSet();
+  if (questions.length !== EXAM_QUESTION_TOTAL) {
     showToast("The reviewed bank does not contain enough domain-tagged questions for this mock.");
     return;
   }
@@ -1548,7 +1613,7 @@ function bindEvents() {
   $("#restartExam").addEventListener("click", resetExamView);
   $("#examAnswers").addEventListener("click", (event) => {
     const button = event.target.closest("[data-exam-answer]");
-    if (button) selectExamAnswer(Number(button.dataset.examAnswer));
+    if (button) selectExamAnswer(button.dataset.examAnswer);
   });
   $("#nextExamQuestion").addEventListener("click", nextExamQuestion);
 

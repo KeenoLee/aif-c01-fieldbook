@@ -1493,13 +1493,13 @@ main {
   font-size: 13px;
 }
 
-.mock-answers .answer-button.is-selected {
+.answer-grid--exam .answer-button.is-selected {
   background: var(--blue-soft);
   border-color: var(--blue);
   box-shadow: inset 4px 0 0 var(--blue);
 }
 
-.mock-answers .answer-button.is-selected .answer-marker {
+.answer-grid--exam .answer-button.is-selected .answer-marker {
   background: var(--blue);
 }
 
