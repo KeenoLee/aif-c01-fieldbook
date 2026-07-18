@@ -317,7 +317,10 @@
           <p class="mock-selection-hint" id="examSelectionHint"></p>
           <div class="answer-grid answer-grid--exam" id="examAnswers"></div>
           <div class="rationale" id="examRationale" hidden></div>
-          <button class="button button--primary exam-next" id="nextExamQuestion" type="button">Next question</button>
+          <div class="exam-question-actions">
+            <button class="button button--secondary" id="previousExamQuestion" type="button">Previous question</button>
+            <button class="button button--primary exam-next" id="nextExamQuestion" type="button">Next question</button>
+          </div>
         </section>
         <section class="results-sheet" id="resultsSheet" hidden aria-live="polite"></section>
       </section>
