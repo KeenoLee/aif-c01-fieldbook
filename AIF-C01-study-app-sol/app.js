@@ -454,7 +454,8 @@ const state = {
     score: 0,
     answers: [],
     answered: false,
-    selection: []
+    selection: [],
+    draftSelections: {}
   },
   mock: {
     running: false,
@@ -1049,7 +1050,7 @@ function startExam() {
     showToast("The reviewed bank does not contain enough questions for this practice attempt.");
     return;
   }
-  state.exam = { running: true, questions, index: 0, score: 0, answers: [], answered: false, selection: [] };
+  state.exam = { running: true, questions, index: 0, score: 0, answers: [], answered: false, selection: [], draftSelections: {} };
   $("#examStart").hidden = true;
   $("#resultsSheet").hidden = true;
   $("#examSheet").hidden = false;
@@ -1059,21 +1060,29 @@ function startExam() {
 function renderExamQuestion() {
   const item = state.exam.questions[state.exam.index];
   const domain = domainById(item.domain);
+  const savedAnswer = state.exam.answers.find((answer) => answer.questionId === item.id);
+  state.exam.answered = Boolean(savedAnswer);
+  state.exam.selection = savedAnswer
+    ? [...savedAnswer.selected]
+    : [...(state.exam.draftSelections[item.id] || [])];
   $("#examPosition").textContent = `Question ${state.exam.index + 1} of ${state.exam.questions.length}`;
   $("#examScore").textContent = `${state.exam.score} correct`;
-  $("#examProgressBar").style.width = `${state.exam.index / state.exam.questions.length * 100}%`;
+  $("#examProgressBar").style.width = `${(state.exam.index + (savedAnswer ? 1 : 0)) / state.exam.questions.length * 100}%`;
   $("#examDomain").textContent = `${domain.short} / ${domain.name}${item.number ? ` · Bank Q${item.number}` : " · Curated"}`;
   $("#examQuestion").textContent = item.prompt;
-  $("#examSelectionHint").textContent = item.answers.length > 1
-    ? `Select ${item.answers.length} answers. Feedback appears after your final choice.`
-    : "Select one answer for immediate feedback.";
+  $("#examSelectionHint").textContent = savedAnswer
+    ? "Answer recorded. Review the explanation or continue navigating."
+    : item.answers.length > 1
+      ? `Select ${item.answers.length} answers. Feedback appears after your final choice.`
+      : "Select one answer for immediate feedback.";
   $("#examRationale").hidden = true;
   $("#examRationale").innerHTML = "";
-  $("#nextExamQuestion").hidden = true;
-  state.exam.answered = false;
-  state.exam.selection = [];
+  $("#previousExamQuestion").disabled = state.exam.index === 0;
+  $("#nextExamQuestion").hidden = !savedAnswer;
+  $("#nextExamQuestion").textContent = state.exam.index === state.exam.questions.length - 1 ? "See results" : "Next question";
   renderExamAnswerOptions();
-  $("#examAnswers .answer-button")?.focus();
+  if (savedAnswer) renderExamRationale(item, savedAnswer);
+  else $("#examAnswers .answer-button")?.focus();
 }
 
 function renderExamAnswerOptions() {
@@ -1107,6 +1116,7 @@ function selectExamAnswer(label) {
   const item = state.exam.questions[state.exam.index];
   if (item.answers.length === 1) {
     state.exam.selection = [label];
+    state.exam.draftSelections[item.id] = [...state.exam.selection];
     gradeExamAnswer();
     return;
   }
@@ -1116,6 +1126,7 @@ function selectExamAnswer(label) {
   } else {
     state.exam.selection = [...state.exam.selection, label];
   }
+  state.exam.draftSelections[item.id] = [...state.exam.selection];
   renderExamAnswerOptions();
   if (state.exam.selection.length === item.answers.length) gradeExamAnswer();
 }
@@ -1126,17 +1137,28 @@ function gradeExamAnswer() {
   const correct = sameBankAnswers(state.exam.selection, item.answers);
   state.exam.answered = true;
   if (correct) state.exam.score += 1;
-  state.exam.answers.push({ questionId: item.id, domain: item.domain, selected: [...state.exam.selection], correct });
+  const savedAnswer = { questionId: item.id, domain: item.domain, selected: [...state.exam.selection], correct };
+  state.exam.answers.push(savedAnswer);
   renderExamAnswerOptions();
   $("#examScore").textContent = `${state.exam.score} correct`;
   $("#examProgressBar").style.width = `${(state.exam.index + 1) / state.exam.questions.length * 100}%`;
-  const rationale = $("#examRationale");
-  rationale.hidden = false;
-  rationale.classList.toggle("is-wrong", !correct);
-  rationale.innerHTML = `<strong>${correct ? "Correct." : `Review this one. The correct ${item.answers.length === 1 ? "answer is" : "answers are"} ${escapeHTML(item.answers.join(" and "))}.`}</strong><p>${escapeHTML(item.explanation || "No explanation is available.")}</p>`;
+  renderExamRationale(item, savedAnswer);
   $("#nextExamQuestion").hidden = false;
   $("#nextExamQuestion").textContent = state.exam.index === state.exam.questions.length - 1 ? "See results" : "Next question";
   $("#nextExamQuestion").focus();
+}
+
+function renderExamRationale(item, savedAnswer) {
+  const rationale = $("#examRationale");
+  rationale.hidden = false;
+  rationale.classList.toggle("is-wrong", !savedAnswer.correct);
+  rationale.innerHTML = `<strong>${savedAnswer.correct ? "Correct." : `Review this one. The correct ${item.answers.length === 1 ? "answer is" : "answers are"} ${escapeHTML(item.answers.join(" and "))}.`}</strong><p>${escapeHTML(item.explanation || "No explanation is available.")}</p>`;
+}
+
+function previousExamQuestion() {
+  if (!state.exam.running || state.exam.index === 0) return;
+  state.exam.index -= 1;
+  renderExamQuestion();
 }
 
 function nextExamQuestion() {
@@ -1191,7 +1213,7 @@ function renderResults(percent, byDomain) {
 }
 
 function resetExamView() {
-  state.exam = { running: false, questions: [], index: 0, score: 0, answers: [], answered: false, selection: [] };
+  state.exam = { running: false, questions: [], index: 0, score: 0, answers: [], answered: false, selection: [], draftSelections: {} };
   $("#examStart").hidden = false;
   $("#examSheet").hidden = true;
   $("#resultsSheet").hidden = true;
@@ -1615,6 +1637,7 @@ function bindEvents() {
     const button = event.target.closest("[data-exam-answer]");
     if (button) selectExamAnswer(button.dataset.examAnswer);
   });
+  $("#previousExamQuestion").addEventListener("click", previousExamQuestion);
   $("#nextExamQuestion").addEventListener("click", nextExamQuestion);
 
   $("#startMock").addEventListener("click", startMockExam);

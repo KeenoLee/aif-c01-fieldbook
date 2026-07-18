@@ -1334,6 +1334,17 @@ main {
   margin-top: 24px;
 }
 
+.exam-question-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.exam-question-actions .exam-next {
+  margin-top: 0;
+}
+
 .mock-start {
   border-top-color: var(--blue);
 }
@@ -2469,6 +2480,7 @@ main {
     min-height: 0;
   }
 
+  .exam-question-actions .button,
   .mock-question-actions .button {
     min-width: 0;
     flex: 1;
